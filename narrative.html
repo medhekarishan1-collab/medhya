@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Narrative Economics — Robert J. Shiller | Complete Study Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #0a0a0c;
+    --surface:     #111116;
+    --surface2:    #18181f;
+    --surface3:    #1e1e28;
+    --border:      #252535;
+    --border2:     #30304a;
+
+    --yellow:      #f5c518;
+    --yellow-dim:  #a88a10;
+    --yellow-pale: #fce97a;
+
+    --blue:        #1a6fe8;
+    --blue-light:  #4d9fff;
+    --blue-dim:    #0f3d85;
+    --blue-pale:   #cce0ff;
+
+    --red:         #d63031;
+    --red-light:   #ff6b6b;
+    --red-dim:     #7a1a1a;
+    --red-pale:    #ffc8c8;
+
+    --white:       #f4f4f8;
+    --white-dim:   #a8a8be;
+    --white-faint: #50506a;
+
+    --sidebar-w: 290px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ───────── SIDEBAR ───────── */
+  #sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    height: 100vh;
+    position: fixed;
+    top: 0; left: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  #sidebar::-webkit-scrollbar { width: 3px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .sidebar-brand {
+    padding: 22px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    position: relative;
+    overflow: hidden;
+  }
+  .sidebar-brand::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--yellow), var(--blue), var(--red));
+  }
+  .sb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--yellow);
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .sb-sub {
+    font-size: 11px;
+    color: var(--white-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav-group {
+    padding: 10px 0 2px;
+  }
+  .nav-group-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue-dim);
+    padding: 0 18px 5px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 18px 7px 16px;
+    cursor: pointer;
+    transition: background .12s;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--surface2); }
+  .nav-item.active {
+    background: var(--surface3);
+    border-left-color: var(--yellow);
+  }
+  .nav-n {
+    font-size: 10px;
+    color: var(--yellow-dim);
+    min-width: 16px;
+    padding-top: 2px;
+    font-weight: 600;
+  }
+  .nav-item.active .nav-n { color: var(--yellow); }
+  .nav-t { font-size: 12.5px; color: var(--white-dim); line-height: 1.4; }
+  .nav-item.active .nav-t { color: var(--yellow-pale); }
+  .nav-item:hover .nav-t { color: var(--white); }
+
+  /* ───────── MAIN PANEL ───────── */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    overflow-y: auto;
+    min-height: 100vh;
+  }
+  #main::-webkit-scrollbar { width: 5px; }
+  #main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp .3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ───────── CHAPTER HERO ───────── */
+  .ch-hero {
+    padding: 52px 64px 44px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(150deg, var(--surface2) 0%, var(--bg) 70%);
+  }
+  .ch-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 90% 10%, rgba(26,111,232,.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--yellow) 0%, var(--blue) 50%, var(--red) 100%);
+  }
+  .hero-part-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 6px;
+  }
+  .hero-chnum {
+    font-size: 12px;
+    color: var(--yellow-dim);
+    font-weight: 600;
+    margin-bottom: 5px;
+    letter-spacing: .04em;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+  .hero-essence {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 16.5px;
+    font-style: italic;
+    color: var(--yellow-pale);
+    max-width: 720px;
+    line-height: 1.75;
+    padding-left: 18px;
+    border-left: 3px solid var(--yellow);
+  }
+
+  /* ───────── BODY CONTENT ───────── */
+  .ch-body {
+    padding: 44px 64px 60px;
+    max-width: 960px;
+  }
+
+  h2.sec {
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--white);
+    margin: 40px 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2.sec::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--yellow);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  h2.sec:first-child { margin-top: 0; }
+
+  h3.subsec {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue-light);
+    margin: 24px 0 8px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    font-size: 11.5px;
+  }
+
+  p {
+    color: var(--white-dim);
+    font-size: 14.5px;
+    line-height: 1.85;
+    margin-bottom: 14px;
+  }
+
+  strong { color: var(--white); font-weight: 600; }
+  em { color: var(--yellow-pale); font-style: italic; }
+
+  /* ───────── CARDS ───────── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--yellow-dim); transform: translateY(-2px); }
+  .card-icon { font-size: 22px; margin-bottom: 9px; }
+  .card-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .card-def {
+    font-size: 12.5px;
+    color: var(--white-faint);
+    line-height: 1.65;
+  }
+
+  /* ───────── CALLOUTS ───────── */
+  .callout {
+    background: var(--surface2);
+    border-left: 4px solid var(--yellow);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+  .callout.blue  { border-left-color: var(--blue); }
+  .callout.red   { border-left-color: var(--red); }
+  .callout.white { border-left-color: var(--white-faint); }
+
+  .callout-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 7px;
+  }
+  .callout.blue  .callout-label { color: var(--blue-light); }
+  .callout.red   .callout-label { color: var(--red-light); }
+  .callout.white .callout-label { color: var(--white-dim); }
+
+  .callout p { color: var(--white-dim); font-size: 13.5px; margin: 0; line-height: 1.7; }
+
+  /* ───────── QUOTE ───────── */
+  blockquote {
+    border-left: 3px solid var(--border2);
+    padding: 12px 20px;
+    margin: 20px 0;
+    font-family: 'IBM Plex Serif', serif;
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--white-dim);
+    line-height: 1.75;
+    background: var(--surface2);
+    border-radius: 0 8px 8px 0;
+  }
+  blockquote footer {
+    font-size: 12px;
+    color: var(--white-faint);
+    font-style: normal;
+    margin-top: 8px;
+  }
+
+  /* ───────── EXAMPLE BLOCK ───────── */
+  .example {
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-top: 3px solid var(--red);
+    border-radius: 0 0 8px 8px;
+    padding: 20px 24px;
+    margin: 22px 0;
+  }
+  .example-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--red-light); margin-bottom: 6px;
+  }
+  .example-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--white); margin-bottom: 10px;
+  }
+  .example p { font-size: 13.5px; color: var(--white-dim); margin: 0; }
+
+  /* ───────── PROPOSITIONS ───────── */
+  .prop-list { list-style: none; margin: 18px 0; }
+  .prop-item {
+    display: flex; gap: 16px;
+    margin-bottom: 16px;
+    padding: 18px 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color .2s;
+  }
+  .prop-item:hover { border-color: var(--yellow-dim); }
+  .prop-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px; font-weight: 800;
+    color: var(--yellow-dim);
+    line-height: 1; min-width: 40px;
+  }
+  .prop-body {}
+  .prop-title {
+    font-size: 14.5px; font-weight: 600;
+    color: var(--white); margin-bottom: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .prop-desc { font-size: 13px; color: var(--white-faint); line-height: 1.7; }
+
+  /* ───────── TWO-COL ───────── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .col-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .col-box-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--white); margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-box ul { list-style: none; }
+  .col-box ul li {
+    font-size: 12.5px; color: var(--white-faint);
+    padding: 5px 0; border-bottom: 1px solid var(--surface3);
+    line-height: 1.5;
+  }
+  .col-box ul li:last-child { border-bottom: none; }
+  .col-box ul li::before { content: '→ '; color: var(--yellow-dim); }
+  .col-box.blue-top { border-top: 3px solid var(--blue); }
+  .col-box.red-top  { border-top: 3px solid var(--red); }
+  .col-box.yellow-top { border-top: 3px solid var(--yellow); }
+
+  /* ───────── TIMELINE ───────── */
+  .timeline { position: relative; padding-left: 26px; margin: 20px 0; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 2px; background: var(--border2);
+  }
+  .tl-item { position: relative; margin-bottom: 22px; padding-left: 16px; }
+  .tl-item::before {
+    content: '';
+    position: absolute; left: -30px; top: 5px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--yellow-dim);
+  }
+  .tl-date {
+    font-size: 11px; font-weight: 700;
+    color: var(--yellow); margin-bottom: 3px;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .tl-text { font-size: 13.5px; color: var(--white-dim); line-height: 1.65; }
+
+  /* ───────── TAKEAWAYS ───────── */
+  .takeaways {
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+    border: 1px solid var(--yellow-dim);
+    border-radius: 10px;
+    padding: 24px 26px;
+    margin: 32px 0 8px;
+  }
+  .tk-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--yellow);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .takeaways ul { list-style: none; }
+  .takeaways ul li {
+    font-size: 13.5px; color: var(--white-dim);
+    padding: 7px 0 7px 22px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.65;
+  }
+  .takeaways ul li:last-child { border-bottom: none; }
+  .takeaways ul li::before {
+    content: '✦';
+    position: absolute; left: 0;
+    color: var(--yellow); font-size: 10px; top: 10px;
+  }
+
+  /* ───────── SIR DIAGRAM ───────── */
+  .sir-diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 28px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .sir-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0; flex-wrap: wrap;
+  }
+  .sir-box {
+    width: 108px; height: 100px;
+    border: 2px solid var(--border2);
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--surface3);
+    transition: border-color .2s;
+  }
+  .sir-box:hover { border-color: var(--yellow); }
+  .sir-box.S { border-color: var(--blue); }
+  .sir-box.I { border-color: var(--yellow); }
+  .sir-box.R { border-color: var(--red); }
+  .sir-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 800;
+  }
+  .sir-box.S .sir-letter { color: var(--blue-light); }
+  .sir-box.I .sir-letter { color: var(--yellow); }
+  .sir-box.R .sir-letter { color: var(--red-light); }
+  .sir-word { font-size: 11px; color: var(--white-faint); margin-top: 4px; }
+  .sir-arrow {
+    display: flex; flex-direction: column;
+    align-items: center; padding: 0 14px;
+  }
+  .sir-arrow-sym { font-size: 22px; color: var(--border2); }
+  .sir-arrow-rate { font-size: 10px; color: var(--yellow-dim); white-space: nowrap; margin-top: 2px; }
+
+  /* ───────── NARRATIVE CARD ───────── */
+  .nar-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    margin: 14px 0;
+    transition: border-color .2s;
+  }
+  .nar-card:hover { border-color: var(--blue-dim); }
+  .nar-era {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--blue-light); margin-bottom: 5px;
+  }
+  .nar-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--white); margin-bottom: 9px;
+  }
+  .nar-body { font-size: 13.5px; color: var(--white-dim); line-height: 1.75; }
+  .nar-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag {
+    font-size: 10.5px; padding: 3px 9px;
+    border-radius: 100px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    color: var(--white-faint);
+  }
+
+  /* ───────── PERENNIAL GRID ───────── */
+  .per-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin: 16px 0;
+  }
+  .per-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px; cursor: pointer;
+    transition: all .2s;
+    border-top: 3px solid transparent;
+  }
+  .per-item:nth-child(3n+1) { border-top-color: var(--yellow); }
+  .per-item:nth-child(3n+2) { border-top-color: var(--blue); }
+  .per-item:nth-child(3n+3) { border-top-color: var(--red); }
+  .per-item:hover { background: var(--surface3); transform: translateY(-2px); }
+  .per-num { font-size: 10px; color: var(--white-faint); font-weight: 700; margin-bottom: 5px; letter-spacing: .05em; text-transform: uppercase; }
+  .per-name { font-size: 13.5px; font-weight: 600; color: var(--white); line-height: 1.4; margin-bottom: 4px; }
+  .per-ch { font-size: 11px; color: var(--white-faint); }
+
+  /* ───────── STAT CHIPS ───────── */
+  .stats-row { display: flex; flex-wrap: wrap; gap: 12px; padding: 0 64px 36px; }
+  .stat-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    min-width: 110px;
+  }
+  .stat-v {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--yellow);
+    line-height: 1;
+  }
+  .stat-l {
+    font-size: 11px; color: var(--white-faint);
+    letter-spacing: .05em; text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ───────── PART CARDS (HOME) ───────── */
+  .part-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+    padding: 0 64px 24px;
+  }
+  .part-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .part-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .part-card.I::before   { background: var(--yellow); }
+  .part-card.II::before  { background: var(--blue); }
+  .part-card.III::before { background: var(--red); }
+  .part-card.IV::before  { background: linear-gradient(90deg, var(--yellow), var(--blue)); }
+  .part-card.APP::before { background: var(--white-faint); }
+  .part-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .part-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .badge-I   { background: rgba(245,197,24,.15); color: var(--yellow); }
+  .badge-II  { background: rgba(26,111,232,.18); color: var(--blue-light); }
+  .badge-III { background: rgba(214,48,49,.18); color: var(--red-light); }
+  .badge-IV  { background: rgba(245,197,24,.1); color: var(--yellow); }
+  .badge-APP { background: rgba(168,168,190,.12); color: var(--white-dim); }
+  .part-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--white); margin-bottom: 9px;
+  }
+  .part-desc { font-size: 12.5px; color: var(--white-faint); line-height: 1.65; margin-bottom: 14px; }
+  .chl { list-style: none; border-top: 1px solid var(--border); padding-top: 12px; }
+  .chl li {
+    font-size: 12px; color: var(--white-faint);
+    padding: 4px 0; cursor: pointer; transition: color .15s;
+  }
+  .chl li:hover { color: var(--yellow-pale); }
+  .chl li::before { content: '→ '; color: var(--border2); }
+
+  /* ───────── HOME HERO ───────── */
+  .home-hero {
+    background: linear-gradient(150deg, var(--surface2) 0%, var(--bg) 60%);
+    padding: 56px 64px 46px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 85% 20%, rgba(26,111,232,.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 10% 80%, rgba(245,197,24,.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .home-hero .hero-stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--yellow) 0%, var(--blue) 50%, var(--red) 100%); }
+  .h-tag {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--blue-light); margin-bottom: 12px;
+  }
+  .h-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 58px; font-weight: 800;
+    color: var(--white); line-height: 1.05;
+    margin-bottom: 10px;
+  }
+  .h-subtitle {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 20px; font-style: italic;
+    color: var(--yellow-pale); margin-bottom: 16px;
+  }
+  .h-author { font-size: 13.5px; color: var(--white-faint); margin-bottom: 24px; }
+  .h-desc {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 16.5px; color: var(--white-dim);
+    max-width: 700px; line-height: 1.8;
+  }
+
+  /* ───────── KEY TERMS ───────── */
+  .key-terms { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+  .kt {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 14px;
+    transition: border-color .2s;
+  }
+  .kt:hover { border-color: var(--blue-dim); }
+  .kt-word { font-size: 12.5px; font-weight: 600; color: var(--blue-light); margin-bottom: 2px; }
+  .kt-def  { font-size: 11.5px; color: var(--white-faint); line-height: 1.5; }
+
+  /* ───────── INFO BOX ───────── */
+  .info-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 18px 0;
+  }
+  .info-box-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--white); margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .info-box p { font-size: 13.5px; margin: 0; }
+
+  /* ───────── COMPARE TABLE ───────── */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 13.5px;
+  }
+  .cmp-table th {
+    background: var(--surface3);
+    color: var(--white);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    border-bottom: 2px solid var(--yellow);
+  }
+  .cmp-table th:first-child { border-radius: 8px 0 0 0; }
+  .cmp-table th:last-child  { border-radius: 0 8px 0 0; }
+  .cmp-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--white-dim);
+    vertical-align: top;
+  }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .cmp-table tr:hover td { background: var(--surface2); }
+  .cmp-table td:first-child { color: var(--white); font-weight: 500; }
+
+  /* ───────── CHAPTER NAV FOOTER ───────── */
+  .ch-nav {
+    display: flex; justify-content: space-between;
+    padding: 24px 64px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+  .ch-nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--white-dim);
+    transition: all .2s;
+  }
+  .ch-nav-btn:hover { border-color: var(--yellow-dim); color: var(--yellow-pale); }
+  .ch-nav-btn span { color: var(--yellow-dim); }
+
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 250px; }
+    .home-hero, .ch-hero, .ch-body, .stats-row, .part-grid, .ch-nav { padding-left: 28px; padding-right: 28px; }
+    .h-title { font-size: 40px; }
+    .per-grid { grid-template-columns: 1fr 1fr; }
+    .two-col  { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sb-title">Narrative Economics</div>
+    <div class="sb-sub">Shiller · Princeton 2019 · 401 pp</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Overview</div>
+    <div class="nav-item active" onclick="show('home')"><span class="nav-n">◎</span><span class="nav-t">Book Overview & Map</span></div>
+    <div class="nav-item" onclick="show('preface')"><span class="nav-n">P</span><span class="nav-t">Preface — What Is Narrative Economics?</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Part I · Beginnings</div>
+    <div class="nav-item" onclick="show('ch1')"><span class="nav-n">1</span><span class="nav-t">The Bitcoin Narratives</span></div>
+    <div class="nav-item" onclick="show('ch2')"><span class="nav-n">2</span><span class="nav-t">An Adventure in Consilience</span></div>
+    <div class="nav-item" onclick="show('ch3')"><span class="nav-n">3</span><span class="nav-t">Contagion, Constellations & Confluence</span></div>
+    <div class="nav-item" onclick="show('ch4')"><span class="nav-n">4</span><span class="nav-t">Why Do Some Narratives Go Viral?</span></div>
+    <div class="nav-item" onclick="show('ch5')"><span class="nav-n">5</span><span class="nav-t">The Laffer Curve & Rubik's Cube Go Viral</span></div>
+    <div class="nav-item" onclick="show('ch6')"><span class="nav-n">6</span><span class="nav-t">Diverse Evidence on Virality</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Part II · Foundations</div>
+    <div class="nav-item" onclick="show('ch7')"><span class="nav-n">7</span><span class="nav-t">Causality and Constellations</span></div>
+    <div class="nav-item" onclick="show('ch8')"><span class="nav-n">8</span><span class="nav-t">Seven Propositions of Narrative Economics</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Part III · Perennial Narratives</div>
+    <div class="nav-item" onclick="show('ch9')"><span class="nav-n">9</span><span class="nav-t">Recurrence and Mutation</span></div>
+    <div class="nav-item" onclick="show('ch10')"><span class="nav-n">10</span><span class="nav-t">Panic versus Confidence</span></div>
+    <div class="nav-item" onclick="show('ch11')"><span class="nav-n">11</span><span class="nav-t">Frugality vs. Conspicuous Consumption</span></div>
+    <div class="nav-item" onclick="show('ch12')"><span class="nav-n">12</span><span class="nav-t">Gold Standard vs. Bimetallism</span></div>
+    <div class="nav-item" onclick="show('ch13')"><span class="nav-n">13</span><span class="nav-t">Labor-Saving Machines Replace Jobs</span></div>
+    <div class="nav-item" onclick="show('ch14')"><span class="nav-n">14</span><span class="nav-t">Automation & AI Replace Almost All Jobs</span></div>
+    <div class="nav-item" onclick="show('ch15')"><span class="nav-n">15</span><span class="nav-t">Real Estate Booms and Busts</span></div>
+    <div class="nav-item" onclick="show('ch16')"><span class="nav-n">16</span><span class="nav-t">Stock Market Bubbles</span></div>
+    <div class="nav-item" onclick="show('ch17')"><span class="nav-n">17</span><span class="nav-t">Boycotts, Profiteers & Evil Business</span></div>
+    <div class="nav-item" onclick="show('ch18')"><span class="nav-n">18</span><span class="nav-t">Wage-Price Spiral & Evil Labor Unions</span></div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Part IV + Appendix</div>
+    <div class="nav-item" onclick="show('ch19')"><span class="nav-n">19</span><span class="nav-t">Future Narratives, Future Research</span></div>
+    <div class="nav-item" onclick="show('appendix')"><span class="nav-n">A</span><span class="nav-t">Epidemic Models for Narratives (SIR)</span></div>
+  </div>
+</nav>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main id="main">
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+  <div class="home-hero">
+    <div class="hero-stripe"></div>
+    <div class="h-tag">Complete Study Dashboard · Princeton University Press 2019 · 401 Pages · 19 Chapters</div>
+    <div class="h-title">Narrative<br>Economics</div>
+    <div class="h-subtitle">How Stories Go Viral & Drive Major Economic Events</div>
+    <div class="h-author">Robert J. Shiller — Sterling Professor of Economics, Yale University · Nobel Laureate 2013</div>
+    <p class="h-desc">Shiller argues that the most powerful — and most neglected — driver of economic booms, crashes, and stagnations is the <strong>contagious story</strong>. Borrowing the mathematical apparatus of disease epidemiology, he shows that viral economic narratives spread through populations just like biological pathogens, altering how millions of people simultaneously think about spending, saving, hiring, and investing. The result is a paradigm-shifting account of why economic events happen at all.</p>
+  </div>
+
+  <div class="stats-row" style="padding-top:36px;">
+    <div class="stat-chip"><div class="stat-v">19</div><div class="stat-l">Chapters</div></div>
+    <div class="stat-chip"><div class="stat-v">4</div><div class="stat-l">Parts</div></div>
+    <div class="stat-chip"><div class="stat-v">9</div><div class="stat-l">Perennial Narratives</div></div>
+    <div class="stat-chip"><div class="stat-v">7</div><div class="stat-l">Key Propositions</div></div>
+    <div class="stat-chip"><div class="stat-v">SIR</div><div class="stat-l">Epidemic Model</div></div>
+    <div class="stat-chip"><div class="stat-v">~200yr</div><div class="stat-l">Historical Span</div></div>
+    <div class="stat-chip"><div class="stat-v">1927</div><div class="stat-l">Kermack-McKendrick</div></div>
+  </div>
+
+  <div class="part-grid">
+    <div class="part-card I" onclick="show('ch1')">
+      <div class="part-badge badge-I">Part I · Chapters 1–6</div>
+      <div class="part-title">The Beginnings of Narrative Economics</div>
+      <div class="part-desc">Establishes the core thesis using Bitcoin as a living laboratory. Introduces the epidemic model, the concept of narrative contagion, and the interdisciplinary toolkit needed to study narratives scientifically.</div>
+      <ul class="chl">
+        <li onclick="event.stopPropagation();show('ch1')">Ch 1 — The Bitcoin Narratives</li>
+        <li onclick="event.stopPropagation();show('ch2')">Ch 2 — Adventure in Consilience</li>
+        <li onclick="event.stopPropagation();show('ch3')">Ch 3 — Contagion, Constellations & Confluence</li>
+        <li onclick="event.stopPropagation();show('ch4')">Ch 4 — Why Do Some Narratives Go Viral?</li>
+        <li onclick="event.stopPropagation();show('ch5')">Ch 5 — The Laffer Curve Goes Viral</li>
+        <li onclick="event.stopPropagation();show('ch6')">Ch 6 — Diverse Evidence on Virality</li>
+      </ul>
+    </div>
+
+    <div class="part-card II" onclick="show('ch7')">
+      <div class="part-badge badge-II">Part II · Chapters 7–8</div>
+      <div class="part-title">The Foundations of Narrative Economics</div>
+      <div class="part-desc">Addresses the causality problem — do narratives cause economic events or vice versa? — and lays out the Seven Propositions that form the analytical backbone of the field.</div>
+      <ul class="chl">
+        <li onclick="event.stopPropagation();show('ch7')">Ch 7 — Causality and Constellations</li>
+        <li onclick="event.stopPropagation();show('ch8')">Ch 8 — Seven Propositions</li>
+      </ul>
+    </div>
+
+    <div class="part-card III" onclick="show('ch9')">
+      <div class="part-badge badge-III">Part III · Chapters 9–18</div>
+      <div class="part-title">Perennial Economic Narratives</div>
+      <div class="part-desc">The empirical heart of the book. Nine recurring narrative constellations that have shaped economic behavior across centuries — from financial panics to automation fears, gold standards to real estate bubbles.</div>
+      <ul class="chl">
+        <li onclick="event.stopPropagation();show('ch9')">Ch 9 — Recurrence and Mutation</li>
+        <li onclick="event.stopPropagation();show('ch10')">Ch 10 — Panic vs. Confidence</li>
+        <li onclick="event.stopPropagation();show('ch11')">Ch 11 — Frugality vs. Conspicuous Consumption</li>
+        <li onclick="event.stopPropagation();show('ch12')">Ch 12 — Gold Standard vs. Bimetallism</li>
+        <li onclick="event.stopPropagation();show('ch13')">Ch 13–14 — Labor-Saving Machines / AI</li>
+        <li onclick="event.stopPropagation();show('ch15')">Ch 15–18 — Real Estate, Stocks, Evil Business, Labor</li>
+      </ul>
+    </div>
+
+    <div class="part-card IV" onclick="show('ch19')">
+      <div class="part-badge badge-IV">Part IV + Appendix</div>
+      <div class="part-title">Advancing Narrative Economics</div>
+      <div class="part-desc">Forward-looking conclusion about which narratives will shape future economies, plus the technical appendix detailing the SIR and related epidemic models and their mathematical parameters.</div>
+      <ul class="chl">
+        <li onclick="event.stopPropagation();show('ch19')">Ch 19 — Future Narratives, Future Research</li>
+        <li onclick="event.stopPropagation();show('appendix')">Appendix — SIR & Epidemic Models</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="ch-body" style="max-width:960px;">
+    <h2 class="sec">The 9 Perennial Economic Narratives at a Glance</h2>
+    <p>These nine narrative constellations are the empirical centrepiece of the book. Each has recurred for over a century, mutating in celebrity, vocabulary, and cultural dress while preserving its core economic structure. Click any to jump to its full chapter analysis.</p>
+    <div class="per-grid">
+      <div class="per-item" onclick="show('ch10')"><div class="per-num">Narrative 1</div><div class="per-name">Panic vs. Confidence</div><div class="per-ch">Chapter 10 →</div></div>
+      <div class="per-item" onclick="show('ch11')"><div class="per-num">Narrative 2</div><div class="per-name">Frugality vs. Conspicuous Consumption</div><div class="per-ch">Chapter 11 →</div></div>
+      <div class="per-item" onclick="show('ch12')"><div class="per-num">Narrative 3</div><div class="per-name">Gold Standard vs. Bimetallism</div><div class="per-ch">Chapter 12 →</div></div>
+      <div class="per-item" onclick="show('ch13')"><div class="per-num">Narrative 4</div><div class="per-name">Labor-Saving Machines Replace Jobs</div><div class="per-ch">Chapter 13 →</div></div>
+      <div class="per-item" onclick="show('ch14')"><div class="per-num">Narrative 5</div><div class="per-name">Automation & AI Replace Almost All Jobs</div><div class="per-ch">Chapter 14 →</div></div>
+      <div class="per-item" onclick="show('ch15')"><div class="per-num">Narrative 6</div><div class="per-name">Real Estate Booms and Busts</div><div class="per-ch">Chapter 15 →</div></div>
+      <div class="per-item" onclick="show('ch16')"><div class="per-num">Narrative 7</div><div class="per-name">Stock Market Bubbles</div><div class="per-ch">Chapter 16 →</div></div>
+      <div class="per-item" onclick="show('ch17')"><div class="per-num">Narrative 8</div><div class="per-name">Boycotts, Profiteers & Evil Business</div><div class="per-ch">Chapter 17 →</div></div>
+      <div class="per-item" onclick="show('ch18')"><div class="per-num">Narrative 9</div><div class="per-name">Wage-Price Spiral & Evil Labor Unions</div><div class="per-ch">Chapter 18 →</div></div>
+    </div>
+
+    <h2 class="sec">The Central Thesis in Three Steps</h2>
+    <p>Shiller's argument can be distilled into a logical chain that runs throughout the entire book. First, economic events — recessions, booms, financial crises — are not fully explained by changes in interest rates, fiscal policy, or technology alone. Second, the missing variable is the <em>contagious narrative</em>: the story that millions of people simultaneously adopt and that changes their spending and investing behavior in a coordinated way. Third, these narratives spread according to the same epidemic mathematics that governs disease, which means they can be studied, measured, and — potentially — anticipated.</p>
+
+    <div class="callout blue">
+      <div class="callout-label">The Book's Methodological Innovation</div>
+      <p>Shiller uses digitized text databases — Google Ngrams (books 1800–2019), ProQuest News &amp; Newspapers, Google Trends — to plot the epidemic curves of specific words and phrases. When "bimetallism" or "technological unemployment" peaks in a database, that is a proxy for the number of people actively spreading the narrative at that moment. This transforms qualitative observation about stories into quantitative analysis comparable to tracking a disease epidemic.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PREFACE ══════════ -->
+<div id="page-preface" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Introduction</div>
+    <div class="hero-chnum">Preface</div>
+    <div class="hero-title">What Is Narrative Economics?</div>
+    <div class="hero-essence">The book opens with Shiller recalling reading Frederick Lewis Allen's <em>Only Yesterday</em> as a 19-year-old — an account of the 1920s that showed contagious dinner-table stories about stock fortunes as the real engine of the Great Depression. Fifty years later, this book is his answer.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Founding Insight</h2>
+    <p>Shiller traces his interest to reading Allen's 1931 bestseller as an undergraduate at the University of Michigan. Allen described how, in the run-up to the 1929 crash, wild stories of sudden fortunes — a widow who bought a country house with Kennecott profits, a young banker "fixed for life" — were spreading across dinner tables. People were buying stocks like Seaboard Air Line assuming it was an aviation company (it was a railroad). The opposing narrative — that get-rich-quick schemes were foolish — was not very contagious. Shiller concluded that these stories were causally connected to both the boom and the subsequent collapse.</p>
+
+    <h2 class="sec">The Definition of Narrative Economics</h2>
+    <p><strong>Narrative economics</strong> is the study of how popular narratives — specifically the <em>viral economic stories</em> that spread person to person — influence economic outcomes such as recessions, booms, financial crises, and secular stagnation. Shiller emphasises two key points that separate this from casual "storytelling about the economy": first, the stories must be genuinely <em>contagious</em>, spreading through populations like diseases; second, they must cause measurable changes in economic <em>behaviour</em> — spending, saving, investing, hiring.</p>
+
+    <div class="callout">
+      <div class="callout-label">Story vs. Narrative — An Important Distinction</div>
+      <p>The Merriam-Webster dictionary defines a narrative as "a way of presenting or understanding a situation or series of events that reflects and promotes a particular point of view or set of values." A narrative is more than a story — it carries a worldview and suggests a moral or behavioral lesson. Economic narratives are stories that specifically suggest what economic actions one should take.</p>
+    </div>
+
+    <h2 class="sec">Why Mainstream Economics Ignored This</h2>
+    <p>Figure 2.1 in the book (from Chapter 2, but introduced conceptually in the preface) shows that among all academic disciplines, economics and finance are the <em>last</em> to incorporate "narrative" as an analytical concept. Sociology, anthropology, psychology, history — all show far higher rates of narrative analysis. Shiller argues this gap is both intellectually puzzling and practically dangerous: economists who ignore narratives are missing one of the primary drivers of the phenomena they study.</p>
+
+    <h2 class="sec">The Epidemic Analogy — Why It Matters</h2>
+    <p>The key methodological claim of the preface is that narratives spread like <em>infectious diseases</em>. This is not merely a metaphor. The same mathematical models that epidemiologists use to forecast the trajectory of a measles or influenza outbreak — models specifying contagion rates and recovery rates — can be adapted to describe and forecast the spread of economic ideas. This gives narrative economics quantitative teeth: rather than simply observing that "people talked about gold a lot in the 1890s," Shiller can measure the epidemic curve, estimate its parameters, and compare it to the Bitcoin epidemic a century later.</p>
+
+    <div class="callout blue">
+      <div class="callout-label">The Core Contribution</div>
+      <p>The book proposes adding narrative analysis as a <em>fourth pillar</em> of economic analysis alongside monetary policy, fiscal policy, and real economic fundamentals (technology, demography, resources). Shiller does not claim narratives explain everything — he claims that ignoring them systematically distorts our understanding of why large economic events happen.</p>
+    </div>
+
+    <h2 class="sec">Key Questions the Book Addresses</h2>
+    <div class="card-grid">
+      <div class="card"><div class="card-icon">💥</div><div class="card-name">Why do economies boom and crash suddenly?</div><div class="card-def">Because viral narratives change how millions of people feel about the future simultaneously, creating coordinated shifts in spending and investment that outrun any change in "real" fundamentals.</div></div>
+      <div class="card"><div class="card-icon">🔄</div><div class="card-name">Why do the same fears recur across centuries?</div><div class="card-def">Narratives mutate like viruses — the same core fear (machines replacing jobs, money being debased, speculators cheating ordinary people) reappears in new dress with new celebrities attached, reinfecting each new generation.</div></div>
+      <div class="card"><div class="card-icon">🔮</div><div class="card-name">Can we forecast economic events better?</div><div class="card-def">Potentially yes — by monitoring the epidemic curves of key economic narratives in real-time text databases, analysts may get early warning signals of changing behavior before the data shows up in GDP or employment figures.</div></div>
+      <div class="card"><div class="card-icon">🗳️</div><div class="card-name">Why do false beliefs persist despite evidence?</div><div class="card-def">Because a story's contagion rate is entirely independent of its factual accuracy. False stories that are entertaining, identity-confirming, or emotionally resonant spread faster than true but boring corrections.</div></div>
+    </div>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Core Concepts Established in the Preface</div>
+      <ul>
+        <li><strong>Narrative economics</strong> studies how viral economic stories cause real changes in spending, saving, hiring, and investing.</li>
+        <li>The epidemic analogy is the book's central methodological framework — not merely a metaphor but a mathematical model borrowed from epidemiology.</li>
+        <li>Economics has been uniquely slow to adopt narrative analysis compared to every other social science discipline.</li>
+        <li>The Great Depression cannot be fully understood without understanding the narrative environment of the 1920s–30s — the stories that shaped how people felt about spending, saving, and the future.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('home')">← Home</div><div class="ch-nav-btn" onclick="show('ch1')"><span>Next →</span> Chapter 1: Bitcoin Narratives</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 1 ══════════ -->
+<div id="page-ch1" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part I · The Beginnings of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 1</div>
+    <div class="hero-title">The Bitcoin Narratives</div>
+    <div class="hero-essence">Bitcoin is the book's master case study — a narrative so brilliantly engineered for contagion that it demonstrates virtually every principle of narrative economics in a single living example that readers can observe directly.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">Why Shiller Opens With Bitcoin</h2>
+    <p>Shiller chooses Bitcoin as the opening case study not because it is the most economically important narrative in history — it isn't — but because it is the most <em>transparent</em> one. Unlike the bimetallism epidemic of the 1890s or the labor-saving machinery panic of the 1930s, Bitcoin's spread is observable in real time. We can watch its epidemic curve build on Google Trends, read the constituent stories, and trace the human-interest elements that give it contagion. Its epidemic curve (Figure 3.2) closely parallels the bimetallism narrative of a century earlier — a striking demonstration that the same narrative template recurs across generations.</p>
+
+    <h2 class="sec">The Five Narrative Threads That Make Bitcoin Contagious</h2>
+    <div class="card-grid">
+      <div class="card"><div class="card-icon">⚖️</div><div class="card-name">1. The Anarchist / Anti-Government Thread</div><div class="card-def">Bitcoin embodies the "hacker ethic" — a crypto-anarchist resistance to centralised power rooted in the MIT computing culture of the 1950s. No government can print, confiscate, or control it. This taps into centuries of libertarian sentiment, given renewed urgency by the 2008 bank bailouts.</div></div>
+      <div class="card"><div class="card-icon">🔍</div><div class="card-name">2. The Mystery of Satoshi Nakamoto</div><div class="card-def">The anonymous, never-found, possibly-billionaire inventor gives Bitcoin a celebrity hero without a face. The mystery narrative generates constant speculation and "detective" journalism, each episode raising contagion by reminding the public of the story. Mystery literature is one of the bestselling genres for a reason — the human brain craves resolution, and Bitcoin denies it indefinitely.</div></div>
+      <div class="card"><div class="card-icon">📉</div><div class="card-name">3. The Economic Inequality Fear</div><div class="card-def">Bitcoin's price first surged around the 2011 Occupy Wall Street "We Are the 99%" movement. Bitcoin offers individual financial empowerment — a decentralised escape from what the narrative frames as a rigged, government-captured financial system. The story of being <em>outside</em> the system that exploits you is ancient and endlessly contagious.</div></div>
+      <div class="card"><div class="card-icon">🤖</div><div class="card-name">4. The Technology Anxiety Thread</div><div class="card-def">Computers are replacing jobs. The existential fear of technological displacement (developed fully in Chapters 13–14) makes Bitcoin's "finance-side-of-tech" narrative deeply appealing: owning Bitcoin is a way of being on the winning side of the digital revolution rather than the displaced side. It requires no technical understanding — anyone can buy it from a vending machine.</div></div>
+      <div class="card"><div class="card-icon">🌍</div><div class="card-name">5. The Cosmopolitan Membership Thread</div><div class="card-def">Bitcoin has no nationality. Owning it makes you, in narrative terms, a citizen of the world — psychologically independent from what the narrative frames as "obsolete nationalism" embodied in paper money with its portraits of dead statesmen. This cosmopolitan appeal is particularly powerful among the globally mobile professional class.</div></div>
+    </div>
+
+    <h2 class="sec">The Critical Measurement: Narrative vs. Technology</h2>
+    <p>Shiller makes a devastating empirical point about what drives Bitcoin's value. The underlying technical innovation — the <em>elliptic curve digital signature algorithm</em> — appears in exactly <strong>1</strong> ProQuest article ever. The <em>digital signature algorithm</em> phrase appears in <strong>5</strong>. The <em>RSA algorithm</em> (the original cryptographic precursor) appears in <strong>26</strong>. But <em>Bitcoin</em> appears in over <strong>15,000</strong> articles. The difference between 26 and 15,000 cannot be explained by the technical merits of the cryptography. It can only be explained by the contagious narrative attached to Bitcoin — the stories of mystery, anarchism, inequality, and future-participation that the dry technical term lacks entirely.</p>
+
+    <div class="callout">
+      <div class="callout-label">The Lily Allen Story — Narrative Contagion at Work</div>
+      <p>In 2009, popular singer Lily Allen turned down an offer to perform one concert for payment in Bitcoin. Had she accepted and held her coins, she would have been a billionaire by 2017. This story — widely circulated — serves as a narrative "proof of concept" that keeps the Bitcoin epidemic alive by triggering regret and FOMO in people who hadn't discovered it early. It perfectly illustrates Proposition 3 from Chapter 8: a single human-interest story can substantially raise a constellation's contagion rate.</p>
+    </div>
+
+    <h2 class="sec">Bitcoin vs. Bimetallism: The Century-Spanning Template</h2>
+    <table class="cmp-table">
+      <tr><th>Feature</th><th>Bimetallism (1890s)</th><th>Bitcoin (2010s)</th></tr>
+      <tr><td>Core proposition</td><td>Two metals should back currency</td><td>Decentralised cryptographic currency</td></tr>
+      <tr><td>Celebrity hero</td><td>William Jennings Bryan (known)</td><td>Satoshi Nakamoto (anonymous)</td></tr>
+      <tr><td>Political alignment</td><td>Anti-eastern-establishment populism</td><td>Anti-government crypto-anarchism</td></tr>
+      <tr><td>Who it appeals to</td><td>Indebted farmers, western workers</td><td>Inequality-anxious millennials, tech class</td></tr>
+      <tr><td>Peak epidemic</td><td>~1896 (Bryan's near-election)</td><td>2017–18 (still unfolding)</td></tr>
+      <tr><td>Establishment response</td><td>Eastern intellectuals called it barbarism</td><td>Mainstream economists call it a bubble</td></tr>
+      <tr><td>Mystery element</td><td>How does gold standard actually work?</td><td>What is a blockchain, who is Satoshi?</td></tr>
+    </table>
+
+    <h2 class="sec">The "Be a Part of the Future" Narrative Frame</h2>
+    <p>Shiller identifies the most powerful element of Bitcoin's contagion as its forward-looking framing: Bitcoin is about <em>the future</em>. This is perhaps the most universally appealing narrative frame — people are anxious about the future (especially given automation fears), want to feel they are on the winning side of whatever is coming, and Bitcoin allows them to purchase a kind of "membership in the future" without needing to understand what they're joining. The very vagueness of this frame is part of its power.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Concepts Introduced in Chapter 1</div>
+      <ul>
+        <li>Bitcoin is a <strong>narrative constellation</strong> — it bundles five separate contagious stories (anarchism, mystery, inequality, technology fear, cosmopolitanism) into a single purchase decision.</li>
+        <li>A narrative's contagion rate depends on its <strong>human-interest elements</strong> — mystery, celebrity, identity-attachment, future-orientation — not its technical merit.</li>
+        <li>The same narrative template (radical monetary innovation vs. establishment money) recurs across generations, substituting new celebrities and new imagery for old ones.</li>
+        <li>Word-frequency in digitised databases is a measurable proxy for a narrative epidemic's prevalence — and Bitcoin's curve is quantitatively similar to bimetallism's a century earlier.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('preface')">← Preface</div><div class="ch-nav-btn" onclick="show('ch2')"><span>Next →</span> Chapter 2: Consilience</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 2 ══════════ -->
+<div id="page-ch2" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part I · The Beginnings of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 2</div>
+    <div class="hero-title">An Adventure in Consilience</div>
+    <div class="hero-essence">Narrative economics is necessarily interdisciplinary. Shiller maps the rich intellectual territory across seven fields — epidemiology, history, sociology, psychology, literary theory, neuroscience, and linguistics — showing how each provides tools that economics alone cannot furnish.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">What Is Consilience?</h2>
+    <p>The word <em>consilience</em> was coined by philosopher of science William Whewell in 1840 and popularised by biologist E.O. Wilson in 1994. It means the unity of knowledge across different academic disciplines — the idea that the most powerful insights come from combining perspectives that have developed independently. Shiller applies this concept to economics: understanding why contagious stories drive economic events requires borrowing from at least seven different disciplines, none of which alone is sufficient.</p>
+
+    <p>The chapter is, in Shiller's words, "an exercise in consilience." It surveys how scholars in other fields have developed narrative analysis, showing that economics is not inventing something new — it is finally catching up with what historians, sociologists, psychologists, and literary theorists have known for decades.</p>
+
+    <h2 class="sec">The Seven Disciplinary Sources of Narrative Economics</h2>
+    <div class="card-grid">
+      <div class="card"><div class="card-icon">🦠</div><div class="card-name">1. Epidemiology</div><div class="card-def">The mathematical modelling of disease spread (SIR and related models) provides the most rigorous quantitative framework for narrative economics. The field is over 100 years old, offering proven tools for measuring contagion rates, predicting epidemic trajectories, and designing interventions. This is the field Shiller borrows most heavily from.</div></div>
+      <div class="card"><div class="card-icon">📜</div><div class="card-name">2. History</div><div class="card-def">Historian Ramsay MacMullen argued that genuine historical understanding requires knowing what was in people's minds — their "terms and images that energise." Economic historian Douglass North (Nobel laureate) emphasised the role of human intentionality — essentially narratives — in the development of economic institutions.</div></div>
+      <div class="card"><div class="card-icon">🧠</div><div class="card-name">3. Sociology, Anthropology & Psychology</div><div class="card-def">Narrative psychology, storytelling sociology, psychoanalysis of narrative, word-of-mouth marketing research. The overriding theme: most people reveal their values through stories, not abstract principles. O'Barr and Conley found investment managers' self-narratives strikingly similar to tribal creation myths.</div></div>
+      <div class="card"><div class="card-icon">📚</div><div class="card-name">4. Literary Studies</div><div class="card-def">Vladimir Propp identified 31 universal "functions" in folk stories. Christopher Booker argued there are only 7 basic plots. Ronald Tobias listed 20 master plots. These structural analyses suggest the human brain has built-in receptors for certain story architectures — explaining why the same plot shapes recur in economic narratives across centuries.</div></div>
+      <div class="card"><div class="card-icon">🧬</div><div class="card-name">5. Neuroscience & Neurolinguistics</div><div class="card-def">Oshin Vartanian (2012) showed that analogy and metaphor "reliably activate" consistent brain regions in fMRI studies. The brain is literally wired to process stories differently from facts. Long-term memory formation involves visual-image processing regions — explaining why narrative details (like a graph drawn on a napkin) are remembered when abstract arguments are not.</div></div>
+      <div class="card"><div class="card-icon">💬</div><div class="card-name">6. Linguistics</div><div class="card-def">George Lakoff and Mark Johnson showed that metaphors are not ornamental — they mould thought and affect conclusions. War metaphors ("shot down," "indefensible") activate neural war-narrative associations even in unrelated contexts. The word "crash" in "stock market crash" activates the rich 1929 narrative constellation, colouring every subsequent use.</div></div>
+    </div>
+
+    <h2 class="sec">Economics Lags Every Other Field</h2>
+    <p>Figure 2.1 is one of the most striking charts in the book. It shows the percentage of academic articles containing the word "narrative" across disciplines. Anthropology leads, followed by sociology, psychology, history, political science, and finance. Economics is last — and by a substantial margin. The figure shows two bars for each discipline: all years combined, and years 2010–2019. Every discipline shows increased attention to narrative in the recent decade. Economics and finance show the smallest gains of all.</p>
+
+    <div class="callout blue">
+      <div class="callout-label">Why This Matters Practically</div>
+      <p>If narratives are causally significant in driving economic events, and if economists systematically ignore narratives while all other social scientists study them carefully, then economic forecasting and policy analysis will have a persistent blind spot exactly where it matters most — in the causal mechanism that initiates economic shifts before they show up in the data economists monitor.</p>
+    </div>
+
+    <h2 class="sec">The Morson–Schapiro Collaboration</h2>
+    <p>The chapter ends with the collaboration between Russian literature scholar Gary Saul Morson and economist Morton Schapiro, whose 2017 book <em>Cents and Sensibility</em> argues that great novels — from Tolstoy to Austen to Dostoevsky — bring economists closer to the essence of human experience than any economic model. Understanding how humans actually behave under uncertainty, in community, with values and moral commitments, requires the texture of great fiction. This is the intellectual aspiration that underlies Shiller's entire project.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Takeaways from Chapter 2</div>
+      <ul>
+        <li>Narrative economics is irreducibly interdisciplinary — no single field has all the tools, and each brings something essential.</li>
+        <li>Epidemiology is the most immediately applicable discipline, offering quantitative models that transform qualitative narrative observation into measurable science.</li>
+        <li>Literary structuralists show that certain story architectures recur universally — the human brain appears to have hardwired preferences for specific narrative shapes that economic stories exploit.</li>
+        <li>Neuroscience confirms that narratives activate different and deeper brain processes than factual information, creating stronger and longer-lasting memories and behavioral effects.</li>
+        <li>Economics' singular failure to engage with narrative is not intellectually defensible — it is a disciplinary blind spot with real-world consequences.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch1')">← Ch 1: Bitcoin</div><div class="ch-nav-btn" onclick="show('ch3')"><span>Next →</span> Ch 3: Contagion & Constellations</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 3 ══════════ -->
+<div id="page-ch3" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part I · The Beginnings of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 3</div>
+    <div class="hero-title">Contagion, Constellations, and Confluence</div>
+    <div class="hero-essence">The epidemic model is the analytical engine of narrative economics. This chapter introduces contagion rates, recovery rates, epidemic curves, and two structural concepts — narrative constellations and confluences — that explain why large economic events are usually caused by many stories working together.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Ebola Epidemic as Analogy</h2>
+    <p>Shiller uses the 2013–15 Ebola epidemic in West Africa as his concrete entry point into epidemic modelling. Figure 3.1 plots weekly new Ebola cases in Lofa County, Liberia — a characteristic hump-shaped curve that rises when contagion exceeds recovery/death, then falls as the susceptible pool depletes and health interventions take effect. The key quantitative insight: an epidemic only grows when the <em>contagion rate exceeds the recovery rate</em>. Below that threshold, the disease fades; above it, the epidemic takes off. The same principle governs narrative epidemics exactly.</p>
+
+    <h2 class="sec">The SIR Model Explained</h2>
+    <div class="sir-diagram">
+      <div style="font-size:11px;color:var(--white-faint);margin-bottom:20px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;">Kermack–McKendrick SIR Model (1927) Applied to Narratives</div>
+      <div class="sir-row">
+        <div class="sir-box S"><div class="sir-letter">S</div><div class="sir-word">Susceptible</div></div>
+        <div class="sir-arrow"><div class="sir-arrow-sym">→</div><div class="sir-arrow-rate">Rate: β × S × I</div></div>
+        <div class="sir-box I"><div class="sir-letter">I</div><div class="sir-word">Infected / Active</div></div>
+        <div class="sir-arrow"><div class="sir-arrow-sym">→</div><div class="sir-arrow-rate">Rate: γ × I</div></div>
+        <div class="sir-box R"><div class="sir-letter">R</div><div class="sir-word">Recovered / Forgot</div></div>
+      </div>
+      <p style="margin-top:20px;font-size:13px;color:var(--white-faint);max-width:560px;margin-left:auto;margin-right:auto;line-height:1.7;">In narrative economics: <strong style="color:var(--blue-light)">S</strong> = people who haven't encountered the narrative · <strong style="color:var(--yellow)">I</strong> = people actively spreading it · <strong style="color:var(--red-light)">R</strong> = people who've heard it but forgotten or lost interest. <br>Epidemic grows only when β/γ &gt; 1 (the Basic Reproduction Number R₀).</p>
+    </div>
+
+    <h2 class="sec">Why Small Differences in Contagion Rate Matter Enormously</h2>
+    <p>This is one of the most important mechanical insights in the book. Two similar narratives may have contagion rates of, say, 0.08 and 0.10 — a seemingly trivial 25% difference. But if the recovery rate is 0.09, the first narrative (0.08) has R₀ = 0.89 and fades away; the second (0.10) has R₀ = 1.11 and becomes a full epidemic reaching most of the population. This threshold effect explains why economic narrative history seems partly random: minor differences in story construction — the napkin detail in the Laffer Curve, the mystery of Satoshi's identity — can be the difference between a flash-in-the-pan and a civilisation-shaping epidemic.</p>
+
+    <h2 class="sec">The Contagion of Economic Models (Figure 3.3)</h2>
+    <p>Figure 3.3 is a stunning illustration of epidemic dynamics applied to professional economic theories. It plots Google Ngrams frequencies for four major models — the IS-LM model (Hicks, 1937), the Multiplier-Accelerator model (Samuelson, 1939), the Overlapping Generations model (Samuelson, 1958), and the Real Business Cycle model (Kydland and Prescott, 1982) — and all four show characteristic hump-shaped epidemic curves. Even academic ideas spread, peak, and fade as narratives do. The IS-LM model's epidemic was amplified by being attached to Keynes, a genuine celebrity, whose colorful personal life (Bloomsbury group, bisexuality, beautiful ballerina wife) provided exactly the kind of human-interest "donkey" that carries ideas to wider audiences.</p>
+
+    <h2 class="sec">Narrative Constellations</h2>
+    <p>Shiller introduces <strong>narrative constellations</strong> as one of his two key structural concepts. Just as the stars of Cygnus form a recognisable pattern in the human mind, a group of individually contagious stories can converge in the public imagination into a coherent worldview that shapes behaviour far more powerfully than any single story could. The Bitcoin narrative is itself a constellation: anarchism, inequality, mystery, technology anxiety, and cosmopolitan identity are five separate stories that support and amplify each other. The Great Depression, Shiller argues in Part III, was caused by a <em>confluence of constellations</em> — not any single narrative.</p>
+
+    <div class="callout red">
+      <div class="callout-label">Key Definition: Constellation</div>
+      <p>A <strong>narrative constellation</strong> is a group of narratives perceived as sharing a common theme, in which each story borrows credibility and contagion from the others. The storyteller doesn't need to establish context — the listener already inhabits a world where the constellation makes the new story immediately plausible. Constellations are why individual narrative corrections rarely work: you're fighting the whole sky, not one star.</p>
+    </div>
+
+    <h2 class="sec">Narrative Confluences</h2>
+    <p>A <strong>confluence</strong> differs from a constellation. Where constellation narratives are perceived as thematically related, confluence narratives may be entirely unrelated to each other — they simply happen to point in the same economic direction at the same moment. In his 2000 book <em>Irrational Exuberance</em>, Shiller listed twelve apparently unrelated "precipitating factors" that all happened to be going viral around 2000: the World Wide Web narrative, the triumph of capitalism narrative, the retiring baby-boomers narrative, the mutual-funds-as-safe-investment narrative, the declining inflation narrative, and so on. None of these individually would have created the largest US stock market bubble in history. All twelve pointing in the same direction simultaneously did.</p>
+
+    <h2 class="sec">Super-Spreaders in Narrative Epidemics</h2>
+    <p>Just as "Typhoid Mary" (Mary Mallon) infected at least 122 people through her unusual personal circumstances, narrative super-spreaders — influential commentators, celebrities, viral content creators — can dramatically raise average contagion rates. Shiller notes that modern analytics firms (citing NVIDIA and AMD) now provide tools that make engineered narrative acceleration nearly invisible, creating a world where the apparent organic virality of some stories may actually be manufactured.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Concepts from Chapter 3</div>
+      <ul>
+        <li>The <strong>SIR epidemic model</strong> — Susceptible → Infected → Recovered — is the quantitative core of narrative economics, adapted from Kermack–McKendrick (1927).</li>
+        <li>An epidemic grows only when the Basic Reproduction Number <strong>R₀ = β/γ exceeds 1</strong>. Small differences in β (contagion rate) can determine whether a narrative fades or becomes pandemic.</li>
+        <li><strong>Narrative constellations</strong> are groups of thematically related stories that amplify each other's contagion — the whole is greater than the sum of its parts.</li>
+        <li><strong>Confluences</strong> are groups of unrelated narratives whose economic effects happen to align at the same moment, producing unusually large economic events like the dot-com bubble.</li>
+        <li>Even academic economic theories spread as narrative epidemics, following hump-shaped curves through academic seminars → textbooks → mainstream media → public consciousness.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch2')">← Ch 2: Consilience</div><div class="ch-nav-btn" onclick="show('ch4')"><span>Next →</span> Ch 4: Why Narratives Go Viral</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 4 ══════════ -->
+<div id="page-ch4" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part I · The Beginnings of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 4</div>
+    <div class="hero-title">Why Do Some Narratives Go Viral?</div>
+    <div class="hero-essence">Virality is partly systematic — human universals like the storytelling instinct, theory of mind, and conspiracy-detection tendencies give certain story structures built-in contagion advantages — and partly random, like genetic mutations in evolutionary biology.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Fundamental Unpredictability</h2>
+    <p>Shiller opens with the film industry's famous acknowledgement of radical uncertainty. Jack Valenti, former MPAA president: <em>"Not until the film opens in a darkened theater and sparks fly between screen and audience can you say this film is right."</em> Screenwriter William Goldman: <em>"Nobody knows anything."</em> The same irreducible unpredictability applies to economic narratives. Beyond identifiable regularities, the network of human minds selecting which stories go viral acts almost like a random number generator. This randomness arises from <em>mutations</em> in stories — tiny changes in framing, celebrity attachment, or cultural timing — and from the complex, unpredictable moments of individual attention that determine which stories get their crucial initial push.</p>
+
+    <h2 class="sec">Homo Narrans: Storytelling as Human Universal</h2>
+    <p>Anthropologist Donald Brown identified as a cross-cultural universal (present in every human society studied) that people "use narrative to explain how things came to be and to tell stories." Some scholars propose renaming our species <em>Homo narrans</em>, <em>Homo narrator</em>, or <em>Homo narrativus</em> — suggesting this trait is more definitively human than the "wise man" of <em>Homo sapiens</em>. Sartre's 1938 observation: <em>"A man is always a teller of tales, he lives surrounded by his stories and the stories of others; he sees everything that happens to him through them."</em> Even during sleep, the brain produces narratives — dreams have characters, settings, and hierarchical event structures. We literally cannot turn the narrative instinct off.</p>
+
+    <h2 class="sec">The Sit-In Story: A Case Study in Spontaneous Epidemic</h2>
+    <p>On February 1, 1960, four students from Greensboro Agricultural and Technical College sat politely at a "whites only" lunch counter and waited to be served until the restaurant closed. They returned the next day with more students. The story — of dignified, law-abiding young Black people ignoring orders to leave — went viral through word of mouth and news media within weeks, spreading sit-in protests throughout much of the United States. Sociologist Francesca Polletta documented how participants described the movement as "spontaneous," "like a fever," happening "over and over again." The word <em>sit-in</em>, coined in 1960, grew on a hump-shaped epidemic curve peaking around 1970. The subsequent <em>teach-in</em> showed a related but shorter and smaller epidemic curve — the same template with different content.</p>
+
+    <div class="example">
+      <div class="example-label">The Wheeled Suitcase Problem</div>
+      <div class="example-title">A Good Idea That Waited 100 Years for the Right Narrative</div>
+      <p>Patents for wheeled suitcases date to 1887. John Allan May tried to manufacture and sell them from 1932, pitching the idea to 125 groups and 1,500 individuals, and "they laughed." Bernard Sadow patented a working version in 1972 — it achieved only limited acceptance. The Rollaboard finally went mainstream in 1991 when Northwest Airlines pilot Robert Plath reframed the idea with glamour: ads showed the bag being pulled effortlessly by flight crews, "first choice of aircrews worldwide." The technology was identical to Sadow's. The narrative change — from "lazy man's luggage" to "what glamorous flight crews use" — provided the contagion that a century of good engineering had failed to deliver.</p>
+    </div>
+
+    <h2 class="sec">Theory of Mind and Keynes's Beauty Contest</h2>
+    <p>Psychologists define <em>theory of mind</em> as the human capacity to model what is happening in other minds. Humans are uniquely advanced in this — we constantly simulate others' beliefs, intentions, and reactions. Keynes formalised this in his 1936 beauty contest metaphor: newspaper readers competing to pick the six prettiest faces from a hundred photographs, where the winner is whoever picks the faces that the most people collectively chose. The optimal strategy is not to pick based on your own opinion but to model what others will think others will think is most popular. The same recursive structure governs narrative virality: people share stories they believe others will want to share with others who will want to share them further. The selection pressure for viral narratives is entirely social and circular — creating runaway feedback loops from small initial differences.</p>
+
+    <h2 class="sec">Conspiracy Theories and the "Us vs. Them" Structure</h2>
+    <p>Popular economic narratives frequently have an underlying Manichean structure — a conspiracy of villains versus virtuous victims. Historian Richard Hofstadter documented that American conspiracy theories show "almost touching concern with factuality," assembling real facts into paranoid narratives despite being fundamentally wrong. The human brain appears evolutionarily predisposed to detect conspiracies (a survival advantage in tribal environments where real conspiracies were common threats). This predisposition gives conspiracy-flavoured economic narratives a built-in contagion advantage: they satisfy the brain's threat-detection circuitry in a way that straightforward factual accounts do not.</p>
+
+    <h2 class="sec">Salganik's Music Market Experiment</h2>
+    <p>Sociologist Matthew Salganik created an artificial online music market with songs by unknown bands that no listener had heard before. He randomly divided participants into "independent" conditions (no social information) and "shared" conditions (participants could see others' download counts, divided into 8 separate "worlds"). The result: in shared conditions, each world developed its own entirely different set of hits from the same song catalog, with dramatically higher inequality between popular and unpopular songs than in the independent condition. Small random initial choices cascaded into large differences through purely social feedback. This is experimental confirmation that narrative virality can be driven by random initial conditions rather than intrinsic quality — a direct application of epidemic dynamics to cultural spread.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Takeaways from Chapter 4</div>
+      <ul>
+        <li>Virality is partly systematic (human-interest, celebrity, mystery, conspiracy structure) and partly random — minor mutations in story construction can make the difference between a flash-in-the-pan and a pandemic.</li>
+        <li>Humans are hardwired storytellers — narrative is the primary mode of human cognition and memory, not an optional ornament. The storytelling instinct is present in every human culture ever studied.</li>
+        <li>Theory of mind — modeling what others think others think — creates recursive feedback loops that can amplify small initial popularity differences into massive narrative epidemics.</li>
+        <li>Conspiracy-framed narratives have built-in evolutionary contagion advantages that make them structurally more viral than factual narratives, regardless of truth value.</li>
+        <li>Salganik's experiment confirms that social information amplifies small random initial differences into large outcomes — the same mechanism that makes some economic narratives pandemic and others invisible.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch3')">← Ch 3: Contagion</div><div class="ch-nav-btn" onclick="show('ch5')"><span>Next →</span> Ch 5: The Laffer Curve Goes Viral</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 5 ══════════ -->
+<div id="page-ch5" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part I · The Beginnings of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 5</div>
+    <div class="hero-title">The Laffer Curve and Rubik's Cube Go Viral</div>
+    <div class="hero-essence">Two parallel epidemic narratives of the early 1980s illuminate how visual imagery, celebrity endorsement, and narrative constellations combine to create politically consequential economic beliefs — and how a story "too good to stop" can outlast the truth.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Laffer Curve: Construction of a Viral Narrative</h2>
+    <p>In 1974, economist Arthur Laffer shared a steak dinner in Washington DC with journalist Jude Wanniski and two White House officials — Dick Cheney and Donald Rumsfeld. According to the story Wanniski published four years later in his 1978 book <em>The Way the World Works</em>, Laffer drew a curve on a restaurant napkin to illustrate his point about the relationship between tax rates and government revenue. The curve is simple: at a 0% tax rate, revenue is zero (nothing taxed); at a 100% rate, revenue is also zero (no one works). In between, revenue forms an inverted U. The punch line: there are always <em>two</em> tax rates that generate the same revenue, so government should obviously prefer the lower one. Laffer himself denied drawing on the napkin — "my mother raised me not to desecrate nice things" — but his honesty couldn't stop a story too good to be stopped. The National Museum of American History now owns the napkin.</p>
+
+    <div class="callout">
+      <div class="callout-label">Why the Napkin Detail Made the Story Contagious</div>
+      <p>It may seem absurd that a detail about a cloth napkin helped make an economic theory politically transformative. But neuroscience and marketing research consistently show that unusual, concrete visual stimuli aid memory formation and raise contagion rates. The napkin communicated urgency and epiphany: the idea was so important that an economist couldn't wait for a proper diagram. It also placed the story in a setting — a fancy Washington power dinner with Cheney and Rumsfeld — that conveyed insider authority. Cicero advocated this strategy in 55 BCE: "those things are most strongly fixed in our minds which are communicated to us by the senses... those things are most easily retained in our minds if they are recommended to the imagination by means of the mental eye."</p>
+    </div>
+
+    <h2 class="sec">The Supply-Side Economics Constellation</h2>
+    <p>The Laffer curve did not act alone. It was embedded in a larger narrative constellation that Shiller calls <em>supply-side economics</em>. The constellation included: the "Swedish tax disaster" story (Olof Palme's government inadvertently creating marginal tax rates over 100%, driving Ingmar Bergman to emigrate), Astrid Lindgren's "Pomperipossa Effect" fairy tale mocking confiscatory taxation, Ayn Rand's <em>Atlas Shrugged</em> (a slow but enormous epidemic providing the moral framework that productive people are being exploited by "looters"), California's Proposition 13 taxpayer revolt of 1978, and Ronald Reagan's "If it moves, tax it" quip. Each story borrowed contagion from the others, forming a coherent worldview that the Laffer curve alone could not have created.</p>
+
+    <h2 class="sec">Political Consequences: Reagan's Tax Cuts</h2>
+    <p>The Laffer curve narrative contributed to the Reagan administration (1981–89) reducing the top US federal income tax bracket from <strong>70% to 28%</strong>, the top corporate rate from 46% to 34%, and the capital gains rate from 28% to 20%. Most academic economists argued the US was NOT on the inefficient, declining side of the Laffer curve — meaning that cutting taxes would reduce revenue, not increase it. They were correct: the federal deficit expanded dramatically. But the narrative was so powerful that this economic reality was politically irrelevant. The story had already changed policy before the evidence could.</p>
+
+    <h2 class="sec">Rubik's Cube: A Parallel Epidemic</h2>
+    <p>Ernő Rubik invented his cube in 1974 — the same year as the Laffer curve dinner. The cube's epidemic was amplified by a Scientific American cover story in March 1981 by Douglas Hofstadter (author of <em>Gödel, Escher, Bach</em>), who connected it to deep mathematical principles including quantum mechanics. Few people remember the mathematical details today, but they remember that Rubik's Cube is "somehow impressive." Figure 5.1 shows that Rubik's Cube and the Laffer curve followed remarkably similar epidemic curves in the same period — neither intrinsically connected to the other, but both riding the same underlying cultural wave of the early 1980s. This is a narrative <em>confluence</em>: unrelated epidemics whose simultaneous appearance suggests common underlying conditions.</p>
+
+    <div class="example">
+      <div class="example-label">The Phishing Equilibrium in Narrative</div>
+      <div class="example-title">"Maximize Shareholder Value" — Three Words That Rewrote Corporate Ethics</div>
+      <p>The phrase "maximize shareholder value" does not appear in corporate discourse before the 1970s. Its use grew steadily through the 1980s and 1990s, providing a scientific-sounding moral justification for corporate raiders and leveraged buyouts. Shiller unpacks the phrase's three words: "maximize" suggests intelligence and calculus; "shareholder" reminds listeners that people's money founded the enterprise; "value" sounds more idealistic than "wealth" or "profit." Together they created a narrative frame that made aggressive corporate behaviour sound not only acceptable but virtuous — a perfect illustration of how word choices engineer narrative contagion.</p>
+    </div>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Takeaways from Chapter 5</div>
+      <ul>
+        <li>Narrative contagion often depends more on story construction details — the napkin, the dinner setting, the celebrity witnesses — than on the accuracy of the underlying economic idea.</li>
+        <li>The Laffer curve was powerful not because it was right but because it was embedded in a whole supply-side economics constellation that provided it with borrowed contagion from multiple directions simultaneously.</li>
+        <li>Celebrities (Reagan, Thatcher) function as narrative amplifiers — they can take a circulating idea and give it the authority and reach to become politically transformative.</li>
+        <li>Seemingly unrelated cultural epidemics (Rubik's Cube and the Laffer Curve) can cluster in time, suggesting common underlying cultural conditions that any given narrative researcher might miss by studying only economic stories.</li>
+        <li>Word choices in economic discourse are powerful engineering tools that determine whether a concept is morally acceptable or rejected — "maximize shareholder value" vs. "corporate raiding" describe the same behaviour with opposite contagion.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch4')">← Ch 4: Virality</div><div class="ch-nav-btn" onclick="show('ch6')"><span>Next →</span> Ch 6: Diverse Evidence</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 6 ══════════ -->
+<div id="page-ch6" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part I · The Beginnings of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 6</div>
+    <div class="hero-title">Diverse Evidence on the Virality of Economic Narratives</div>
+    <div class="hero-essence">A wide-ranging chapter drawing on neurosurgery, neuroeconomics, evolutionary biology, marketing science, and historical observation to establish that narrative contagion is real, ancient, neurologically grounded, and economically consequential.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">Wilder Penfield's Electrode Experiments (1958)</h2>
+    <p>Neurosurgeon Wilder Penfield performed brain surgeries on conscious patients under only local anaesthesia, as the brain itself has no pain receptors. By implanting electrodes and stimulating specific brain regions, he discovered dedicated neural circuits that, when activated, caused patients to hear music in chronological sequence or to tell stories in chronological sequence — involuntarily, repeatedly, and consistently. One patient heard the same orchestral piece every time a specific electrode was applied. Another told a story about being in a room with a book, then another about her mother talking to her, then laughed spontaneously when the same point was stimulated fifteen minutes later. Penfield's results suggest the human brain has hardwired, dedicated circuits for sequential narrative and music — these are not emergent properties of general intelligence but specific evolved capabilities.</p>
+
+    <h2 class="sec">Neurochemistry of Compelling Stories</h2>
+    <p>Neuroeconomist Paul Zak showed experimentally that narratives with a "dramatic arc" — tension building toward resolution — raise blood levels of <strong>oxytocin</strong> (the "love hormone," facilitating trust and social bonding) and <strong>cortisol</strong> (the stress hormone, which aids memory formation) compared to flat narratives. This means that compelling stories literally alter the neurochemistry of listeners in ways that make memories stronger and behavioral effects more durable. This is the mechanism by which a good story about a stock tip, a housing opportunity, or a monetary innovation lodges in memory and influences decisions long after the original encounter.</p>
+
+    <h2 class="sec">Fear Circuits and Economic Panics</h2>
+    <p>Shiller draws a direct and scientifically grounded line from animal brain research to financial crises. Pavlov's dogs (1927) showed that conditioned fear responses could be extinguished by repeated non-reinforcement — but the extinction was never complete: residual firing in the lateral amygdala persisted. In humans, the same lateral amygdala governs fear acquisition and extinction, and similar brain structures are conserved across rats, dogs, and humans going back to Mesozoic evolutionary origins. Post-traumatic stress disorder represents a failure of fear extinction that Shiller applies to entire populations: after the Great Depression, residual fear of bank runs and mass unemployment persisted in cultural memory for generations, ready to be reactivated by the right narrative trigger.</p>
+
+    <div class="callout blue">
+      <div class="callout-label">9/11 and the "Get on Board" Counter-Narrative</div>
+      <p>The September 11, 2001 attacks produced flashbulb memories in virtually every American — intensely vivid, socially reinforced recollections of exactly where they were when they heard the news. The expected economic effect was recession-deepening fear. Instead, the recession that had begun in March 2001 ended in November 2001 — one of the shortest in US history. Shiller attributes this partly to President Bush's explicit narrative construction: "When they struck, they wanted to create an atmosphere of fear... Get down to Disney World in Florida. Take your families and enjoy life." Roosevelt used the same technique in 1933 ("the only thing we have to fear is fear itself"). Both demonstrate that counter-narratives can have measurable macroeconomic effects.</p>
+    </div>
+
+    <h2 class="sec">Flashbulb Memory and Long-Lasting Economic Influence</h2>
+    <p>Psychologists have identified "flashbulb memories" — exceptionally vivid, detailed, emotionally intense memories formed during shocking or nationally significant events. The first shots of the Civil War, Pearl Harbor, 9/11, the 1929 crash — people remember exactly what trivial activity they were engaged in when they heard the news. Shiller notes that flashbulb memories are particularly likely to involve shared identity with others, to be rehearsed socially, and thus to be incorporated into contagious narratives. The 1929 crash flashbulb memory remained alive in the cultural consciousness for 80 years, shaping the response to the 2008 financial crisis — more attention was paid to "Great Depression" comparisons in 2009 than during the actual Depression.</p>
+
+    <h2 class="sec">The Affect Heuristic and Narrative Contamination</h2>
+    <p>Shiller and colleagues (with George Akerlof, William Goetzmann, and Dasol Kim) found in questionnaire surveys of investors that a <em>local earthquake within the past 30 days</em> significantly raised respondents' estimated probability of a stock market crash. The earthquake has no logical connection to stock prices. But emotionally charged experiences contaminate risk assessments in unrelated domains — psychologists call this the <em>affect heuristic</em>. Further research has shown that: World Cup competition results affect economic confidence, shark attacks at beaches affect votes for local incumbents, and classical background music in wine stores causes customers to buy more expensive wines. The ambient emotional state created by narratives — not just the explicit economic reasoning — shapes economic decisions.</p>
+
+    <h2 class="sec">Book Jackets and the Phishing Equilibrium</h2>
+    <p>The modern book jacket was invented in the 1920s marketing revolution — before then, books had plain paper protective covers with no marketing function. Initial reader resistance was substantial: poet Dorothea Lawrence Mann (1921) described readers who threw away jackets immediately with "the greatest celerity." Yet book jackets flourished because they worked — they raised contagion rates by allowing publishers to display endorsements, striking imagery, and author photographs. This created what Shiller and Akerlof call a <em>phishing equilibrium</em>: in a competitive market where rivals use manipulation, no single competitor can afford to stop. The manipulation becomes structural rather than individual. The same equilibrium applies to logos on clothing, "news" that is actually marketing, and any other situation where narrative manipulation is competitively enforced.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Takeaways from Chapter 6</div>
+      <ul>
+        <li>The human brain has dedicated, hardwired neural circuits for sequential narrative — Penfield's electrode experiments show these are not emergent but structurally built in.</li>
+        <li>Compelling stories change listeners' neurochemistry (oxytocin, cortisol), creating stronger memories and more durable behavioral effects than purely factual information.</li>
+        <li>Residual fear from historical economic traumas (the Great Depression) persists in cultural memory through the same amygdala mechanisms that cause PTSD in individuals.</li>
+        <li>The affect heuristic means that any emotionally charged narrative — even an unrelated earthquake — contaminates economic risk assessments, giving ambient narrative environment a direct effect on investment decisions.</li>
+        <li>Phishing equilibria mean that narrative manipulation can become structurally enforced in competitive markets — no individual actor can afford to stop even if all would prefer a world without it.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch5')">← Ch 5: Laffer Curve</div><div class="ch-nav-btn" onclick="show('ch7')"><span>Next →</span> Ch 7: Causality</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 7 ══════════ -->
+<div id="page-ch7" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part II · The Foundations of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 7</div>
+    <div class="hero-title">Causality and Constellations</div>
+    <div class="hero-essence">The thorniest theoretical challenge: do narratives cause economic events, or do economic events cause narratives? Shiller argues the answer is both — but crucially, new contagious narratives often originate outside the economy as exogenous innovations, making them genuine causal inputs.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Standard Economist's Assumption (Which Shiller Challenges)</h2>
+    <p>Most economists, when they acknowledge narratives at all, assume causality flows only in one direction: real economic events occur first, and narratives are their reflections or symptoms. A recession happens; then people talk about the recession. The stock market crashes; then people tell crash stories. Under this view, studying narratives adds narrative description to economic analysis but doesn't change the causal picture. Shiller argues this is fundamentally wrong — and that the direction of causality is at least partly reversed, with new narratives being exogenous innovations that <em>cause</em> economic changes.</p>
+
+    <div class="callout">
+      <div class="callout-label">Bidirectional Causality — The Complete Picture</div>
+      <p>Shiller's claim: new contagious narratives cause economic events (by changing spending/investing behavior before any "real" change has occurred), AND economic events cause changed narratives (by providing new story material). The key insight is that new narratives are often <em>exogenous</em> — each narrative originates in a single individual's creative act, independent of the economy's current state, and then spreads through epidemic dynamics that have their own momentum.</p>
+    </div>
+
+    <h2 class="sec">The Cultural Entrepreneur</h2>
+    <p>Economic historian Joel Mokyr calls the individual who creates a new contagious narrative a <em>cultural entrepreneur</em>, tracing the concept to David Hume (1742): "What depends on a few persons is, in great measure, to be ascribed to chance, or secret and unknown causes; what arises from a great number may often be accounted for by determinate and known causes." The individuals who invent viral economic narratives are usually unknown — we rarely know who first used the phrase "Great Depression," who first connected homeownership to the American Dream, or who first framed automation as existential threat. But their innovations propagate through epidemic dynamics that can reshape the entire economy.</p>
+
+    <h2 class="sec">Sunspots and Self-Fulfilling Prophecies</h2>
+    <p>Economist William Stanley Jevons proposed in 1878 that world economic fluctuations were caused by sunspots (via their effect on harvests). The theory was wrong — solar output variations are too small to matter — but economist David Cass and Karl Shell showed in 1983 that sunspots could affect the economy purely if <em>people believed they would</em>. This defines the concept of <em>sunspot equilibria</em>: any extraneous signal, however physically irrelevant, can drive economic behavior if it is sufficiently widely believed. Economic narratives are endogenous sunspots: not physically exogenous (like actual sunspots) but originating in human creativity rather than in economic fundamentals, and spreading through epidemic dynamics that are partially independent of the economic reality they describe.</p>
+
+    <h2 class="sec">Irving Fisher's "Permanently High Plateau" — Anatomy of a Narrative</h2>
+    <p>On October 15, 1929 — exactly two weeks before the crash — Yale's most eminent economist Irving Fisher told the Purchasing Agents Association of New York that the stock market had reached "a permanently high plateau." The newspapers picked up the colorful new phrase immediately. Fisher could not have known the crash was imminent; he was giving his honest assessment. But the <em>specificity</em> and <em>memorability</em> of the phrase — and the subsequent spectacular falsification by events — transformed it into a lasting cultural artifact that has been cited in every subsequent discussion of overconfidence and speculative excess. Today those four words are more famous than the title of any of Fisher's books. The phrase was <em>exogenous</em> to the crash — it originated in Fisher's creative choice of language at a particular moment — but it may have affected the depth and duration of the downturn by amplifying the subsequent narrative of foolish overconfidence.</p>
+
+    <h2 class="sec">Controlled Experiments Establishing Narrative Causality</h2>
+    <p>Shiller surveys experiments from other fields that directly demonstrate narrative causation of behavior. In marketing, Jennifer Edson Escalas showed that <em>narrative transportation</em> — ads that place the viewer as a character in a story — is more effective at changing purchase behavior than analytical argumentation, especially when the rational case for the product is weak. In journalism, Marcel Machill found that television news presented as a story with a protagonist (a baker harmed by air pollution) was remembered better than the identical information presented factually. In law, Brad Bell and Elizabeth Loftus demonstrated that including an irrelevant but vivid detail ("knocked over a bowl of guacamole dip onto the white shag carpet") significantly increased conviction rates in experimental juries — the detail had zero probative value but raised contagion in the jurors' mental model of the event.</p>
+
+    <h2 class="sec">Anniversaries as Narrative Restart Mechanisms</h2>
+    <p>Narratives can be restarted by anniversaries, random celebrity statements, and new technical developments that make old stories relevant again. The 1987 stock market crash narrative is revived every October. The Great Depression is cited whenever any recession begins. Bitcoin's narrative was revived in 2017 by Initial Coin Offerings (ICOs), which created hundreds of new cryptocurrency stories each attached to a particular business narrative — bringing back the old sport of "picking stocks" and generating nearly 900 new ICOs in that year alone. These restart mechanisms are partly predictable (anniversaries always come) and partly unpredictable (who could have predicted ICOs?), maintaining a continuous ambient level of narrative epidemic activity around historically significant events.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Takeaways from Chapter 7</div>
+      <ul>
+        <li>Causality is <strong>bidirectional</strong>: narratives cause economic events AND economic events reshape narratives — but the standard economic assumption that causality runs only from events to stories is wrong.</li>
+        <li>New narratives are often <strong>exogenous innovations</strong> — originating in individual creative acts rather than in economic fundamentals — making them genuine causal inputs rather than mere symptoms.</li>
+        <li>Self-fulfilling prophecy and sunspot equilibria demonstrate that purely narrative dynamics (belief systems independent of economic reality) can create and sustain large economic effects.</li>
+        <li>Controlled experiments in marketing, journalism, law, and other fields confirm that narrative causation of behavior is real, measurable, and substantially larger than rational analytical causation in many contexts.</li>
+        <li>Anniversaries, celebrity statements, and technical mutations provide regular narrative restart mechanisms, ensuring that historically significant narratives never fully die.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch6')">← Ch 6: Diverse Evidence</div><div class="ch-nav-btn" onclick="show('ch8')"><span>Next →</span> Ch 8: Seven Propositions</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 8 ══════════ -->
+<div id="page-ch8" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part II · The Foundations of Narrative Economics</div>
+    <div class="hero-chnum">Chapter 8</div>
+    <div class="hero-title">Seven Propositions of Narrative Economics</div>
+    <div class="hero-essence">The theoretical capstone of the book's first half. Seven foundational principles that should guide any attempt to identify, measure, and forecast the economic effects of narrative epidemics — a usable analytical framework for practitioners.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Seven Propositions in Full</h2>
+    <ol class="prop-list">
+      <li class="prop-item">
+        <div class="prop-num">1</div>
+        <div class="prop-body">
+          <div class="prop-title">Epidemics Can Be Fast or Slow, Big or Small</div>
+          <div class="prop-desc">There is no standard trajectory for a narrative epidemic. The SIR model's parameters can generate any combination of speed and magnitude: fast large epidemics (a national emergency narrative), fast small ones (a meme that dies in a week), slow large ones (the American Dream, building over 90 years), and slow small ones (a patriotic story told only at certain civic occasions). Crucially, <em>rapid spread is not a reliable indicator of long-term significance</em>. Best-seller lists measure only one-week sales — the Bible and the Koran never appear on best-seller lists. Shiller's 1987 crash survey found 97% of high-income Americans heard about the crash on the same day, average time 1:56pm Eastern — a fast epidemic measured in hours.</div>
+        </div>
+      </li>
+      <li class="prop-item">
+        <div class="prop-num">2</div>
+        <div class="prop-body">
+          <div class="prop-title">Important Economic Narratives May Comprise a Very Small Percentage of Popular Talk</div>
+          <div class="prop-desc">The most economically significant narratives are often rarely mentioned in casual conversation. Journalist Arthur Krock toured 20 US cities in 1932 at the depth of the Great Depression and documented ordinary conversations. He found almost no discussion of economic causes or policy — mostly trivial small talk, with occasional vivid stories of hardship (men eating from garbage cans at 3am). Yet those background narratives were shaping how millions of people felt about spending and saving. <em>Narratives can do their economic work in the background of consciousness without being explicitly discussed</em> — like ambient fear that inhibits spending without ever being named as the reason.</div>
+        </div>
+      </li>
+      <li class="prop-item">
+        <div class="prop-num">3</div>
+        <div class="prop-body">
+          <div class="prop-title">Narrative Constellations Have More Impact Than Any One Narrative</div>
+          <div class="prop-desc">Individual narratives rarely drive major economic events alone. It is the <em>constellation</em> — the cluster of mutually reinforcing stories — that creates the conditions for large behavioral change. Alternative academic terms include "grand narrative," "master narrative," and "metanarrative," but Shiller prefers "constellation" because it implies less intellectual organisation and more organic mutual reinforcement. Constellations can include anonymous stories told as "they say that..." — the unnamed authority of the constellation's other stars lending credibility without requiring a named source. The cryptocurrency constellation (Bitcoin + ICOs + Satoshi mystery + inequality anger + Lily Allen story) is far more powerful than Bitcoin alone.</div>
+        </div>
+      </li>
+      <li class="prop-item">
+        <div class="prop-num">4</div>
+        <div class="prop-body">
+          <div class="prop-title">The Economic Impact of Narratives May Change Through Time</div>
+          <div class="prop-desc">The same word or phrase can signal entirely different economic narratives in different eras — with opposite behavioral implications. "Stock market crash" in 1929 implied a possibly permanent catastrophe; by 1987 it implied a temporary buying opportunity. World War II in 1939 produced a 9.6% one-day stock market <em>gain</em> — the opposite of World War I in 1914 — because the interwar narrative of profitable wartime investment had taken hold between the two wars. Synonyms are never neutral: "devaluation" vs. "debasement" describe the same monetary change with opposite moral valences. Researchers using digitised databases must always read the specific context, not just count words.</div>
+        </div>
+      </li>
+      <li class="prop-item">
+        <div class="prop-num">5</div>
+        <div class="prop-body">
+          <div class="prop-title">Truth Is Not Enough to Stop False Narratives</div>
+          <div class="prop-desc">A narrative's contagion rate is <em>structurally independent</em> of its factual accuracy. Vosoughi et al. (Science, 2018) analysed 126,000 Twitter rumours vetted by six fact-checking sites and found false stories had a <em>six times higher</em> retweeting rate than true ones. Norman Angell's <em>The Great Illusion</em> (1911) correctly refuted the "cult of the offensive" narrative that enabled World War I — he later won the Nobel Peace Prize — but his truth didn't spread fast enough to prevent the war. <em>A corrective true story is rarely as entertaining as the false one it corrects</em>. The original false narrative often persists in memory alongside the correction, continuing to affect behavior.</div>
+        </div>
+      </li>
+      <li class="prop-item">
+        <div class="prop-num">6</div>
+        <div class="prop-body">
+          <div class="prop-title">Contagion of Economic Narratives Builds on Opportunities for Repetition</div>
+          <div class="prop-desc">Narratives require regular, legitimate opportunities to be introduced into conversation — otherwise they fade even if they have high intrinsic contagion. The song "Happy Birthday to You" — probably the most contagious song in human history — is not popular because of its musical quality. It's popular because it is attached to a ritual (birthday parties) that guarantees annual repetition throughout everyone's life, with a personal name inserted to maximize human-interest. Stock market indexes, invented in the 1920s, gave financial narratives a new legitimate daily repetition opportunity. Home price indexes, popularised in the 1970s, did the same for housing narratives. Ritual, ritual, ritual.</div>
+        </div>
+      </li>
+      <li class="prop-item">
+        <div class="prop-num">7</div>
+        <div class="prop-body">
+          <div class="prop-title">Narratives Thrive on Human Interest, Identity, and Patriotism</div>
+          <div class="prop-desc">Narratives attached to a specific identifiable person — a celebrity, a named hero, a visible victim — are remembered longer because the brain's person-modelling systems lower the forgetting rate. George Washington's cherry tree story persists because it attaches American patriotic identity to a basic moral lesson. The American Dream's pandemic spread was amplified when MLK's assassination gave it a celebrity martyr. Patriotism explains why ideas' foreign origins are systematically suppressed — Marx gets credit for Louis Blanc's phrase, Roosevelt gets credit for Thomas Mullen's. The celebrity element is not ornamental but structurally load-bearing in narrative epidemics.</div>
+        </div>
+      </li>
+    </ol>
+
+    <h2 class="sec">Using the Seven Propositions Analytically</h2>
+    <p>Shiller closes the chapter by making the propositions operational. When analysing any economic event historically or in real time, ask: Is the relevant narrative fast or slow (Proposition 1)? Might it be operating below the level of common conversation (Proposition 2)? What constellation is it part of (Proposition 3)? Has its economic meaning changed since it first appeared (Proposition 4)? Are there false versions competing with true ones (Proposition 5)? What repetition mechanisms sustain it (Proposition 6)? What human-interest or identity element gives it persistence (Proposition 7)? These seven questions form a diagnostic checklist for narrative analysis.</p>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ The Seven Propositions — Summary Reference</div>
+      <ul>
+        <li><strong>P1:</strong> Epidemics vary enormously in speed and scale — don't assume fast = important or visible = significant.</li>
+        <li><strong>P2:</strong> The most economically significant narratives may rarely appear in ordinary conversation — operating as background anxiety rather than explicit discussion.</li>
+        <li><strong>P3:</strong> Constellations — clusters of mutually reinforcing stories — are what drive major events, not individual narratives.</li>
+        <li><strong>P4:</strong> The same words carry different economic meanings in different eras — always read context, never just count words.</li>
+        <li><strong>P5:</strong> Truth cannot reliably defeat false narratives — corrections rarely spread as fast as original false stories.</li>
+        <li><strong>P6:</strong> Repetition mechanisms (rituals, anniversaries, indexes) are essential infrastructure for sustained narrative epidemics.</li>
+        <li><strong>P7:</strong> Celebrity attachment, personal identity, and patriotism lower forgetting rates and are structurally essential, not merely decorative.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch7')">← Ch 7: Causality</div><div class="ch-nav-btn" onclick="show('ch9')"><span>Next →</span> Ch 9: Recurrence & Mutation</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 9 ══════════ -->
+<div id="page-ch9" class="page">
+  <div class="ch-hero">
+    <div class="hero-stripe"></div>
+    <div class="hero-part-tag">Part III · Perennial Economic Narratives</div>
+    <div class="hero-chnum">Chapter 9</div>
+    <div class="hero-title">Recurrence and Mutation</div>
+    <div class="hero-essence">Economic narratives don't die — they mutate. The same core fears and moral frameworks recur across centuries with updated celebrities, updated imagery, and updated punch lines. Chapter 9 introduces the nine perennial narratives and explains how mutation and recurrence work.</div>
+  </div>
+  <div class="ch-body">
+    <h2 class="sec">The Influenza Analogy</h2>
+    <p>The 1918 Spanish flu pandemic — which killed more people than World War I — was a mutation of an influenza virus that had circulated in less virulent forms before. The mutation produced exceptional virulence that took the world by surprise. Shiller argues that the Great Depression of the 1930s is the exact narrative equivalent: a mutation of existing panic/confidence, labor displacement, and monetary narratives produced an exceptionally virulent combination that was historically unprecedented in its severity. In both cases, understanding the mutation — what specifically changed that made the epidemic so deadly — is crucial for preventing or mitigating the next outbreak.</p>
+
+    <h2 class="sec">How Narrative Mutations Occur</h2>
+    <p>Narrative mutations typically involve four kinds of changes: first, a new celebrity replacing the old one (Satoshi Nakamoto replacing William Jennings Bryan in the monetary innovation narrative); second, new visual imagery replacing old imagery; third, a new punch line that resonates better with contemporary anxieties; fourth, a changed "economic valence" — the same story structure producing opposite behavioral implications in a different context. The labor-saving machinery narrative that produced fear and spending restraint in the 1930s mutated into the dot-com opportunity narrative of the 1990s: the same story of computers replacing human work, but framed as liberation rather than displacement.</p>
+
+    <div class="callout red">
+      <div class="callout-label">The Mutation That Changes Meaning</div>
+      <p>The automation narrative of the 1930s said: "machines will permanently destroy jobs and cause Depression." The automation narrative of the 1990s said: "computers will create a new economy of limitless wealth." Same core technology story, <em>opposite</em> economic valence, driven by different surrounding narratives about what computers represented — scarcity vs. abundance, threat vs. opportunity. Identical surface-level word counts would completely miss this inversion.</p>
+    </div>
+
+    <h2 class="sec">The Nine Perennial Narratives — Overview</h2>
+    <p>Part III presents nine narrative constellations organised thematically rather than chronologically, because the themes transcend any specific historical period. Each touches on fundamental human anxieties about economic life: security, fairness, technological change, monetary integrity, wealth display, and institutional power. Shiller is explicit that this list is not exhaustive — it reflects the narratives for which he has assembled sufficient historical evidence — and that future research will identify additional perennial clusters.</p>
+
+    <div class="per-grid">
+      <div class="per-item" onclick="show('ch10')"><div class="per-num">Narrative 1</div><div class="per-name">Panic vs. Confidence</div><div class="per-ch">Chapter 10 →</div></div>
+      <div class="per-item" onclick="show('ch11')"><div class="per-num">Narrative 2</div><div class="per-name">Frugality vs. Conspicuous Consumption</div><div class="per-ch">Chapter 11 →</div></div>
+      <div class="per-item" onclick="show('ch12')"><div class="per-num">Narrative 3</div><div class="per-name">Gold Standard vs. Bimetallism</div><div class="per-ch">Chapter 12 →</div></div>
+      <div class="per-item" onclick="show('ch13')"><div class="per-num">Narrative 4</div><div class="per-name">Labor-Saving Machines Replace Jobs</div><div class="per-ch">Chapter 13 →</div></div>
+      <div class="per-item" onclick="show('ch14')"><div class="per-num">Narrative 5</div><div class="per-name">AI Replaces Almost All Jobs</div><div class="per-ch">Chapter 14 →</div></div>
+      <div class="per-item" onclick="show('ch15')"><div class="per-num">Narrative 6</div><div class="per-name">Real Estate Booms & Busts</div><div class="per-ch">Chapter 15 →</div></div>
+      <div class="per-item" onclick="show('ch16')"><div class="per-num">Narrative 7</div><div class="per-name">Stock Market Bubbles</div><div class="per-ch">Chapter 16 →</div></div>
+      <div class="per-item" onclick="show('ch17')"><div class="per-num">Narrative 8</div><div class="per-name">Boycotts, Profiteers & Evil Business</div><div class="per-ch">Chapter 17 →</div></div>
+      <div class="per-item" onclick="show('ch18')"><div class="per-num">Narrative 9</div><div class="per-name">Wage-Price Spiral & Evil Labor Unions</div><div class="per-ch">Chapter 18 →</div></div>
+    </div>
+
+    <h2 class="sec">A Timeline of Major US Economic Events Referenced in Part III</h2>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-date">1857–1865</div><div class="tl-text">Depression of 1857 followed by Civil War. Uncle Tom's Cabin (1852) narrative arguably contributed to the war itself — demonstrating that narratives can cause the largest economic events in history.</div></div>
+      <div class="tl-item"><div class="tl-date">1873–1879</div><div class="tl-text">Long depression. Henry George's <em>Progress and Poverty</em> (1879) becomes the bestselling economics book in US history. First major peak of labor-saving machinery fears.</div></div>
+      <div class="tl-item"><div class="tl-date">1893–1899</div><div class="tl-text">Extended depression with 8%+ unemployment. Bimetallism epidemic peaks. Bryan's "Cross of Gold" speech nearly wins him the 1896 presidency. The Great Wizard of Oz published (1900) as bimetallism parable.</div></div>
+      <div class="tl-item"><div class="tl-date">1907</div><div class="tl-text">Panic of 1907. J.P. Morgan as hero narrative shapes creation of the Federal Reserve (1913). "Financial panic" narrative peaks in books.</div></div>
+      <div class="tl-item"><div class="tl-date">1920–1921</div><div class="tl-text">Brief but extreme depression — sharpest US deflation ever. "Profiteer" narrative peaks. The word "robot" coined (1921 in Čapek's R.U.R.) for the first time.</div></div>
+      <div class="tl-item"><div class="tl-date">1929–1941</div><div class="tl-text">Great Depression. Confluence of panic, frugality, technological unemployment, underconsumption, and gold standard narratives. Unemployment above 8% every year of the 1930s.</div></div>
+      <div class="tl-item"><div class="tl-date">1973–1982</div><div class="tl-text">Two severe "Great Recessions" (both named at the time). Wage-price spiral narrative peaks. Supply-side economics and Laffer Curve narratives emerge in response.</div></div>
+      <div class="tl-item"><div class="tl-date">2007–2009</div><div class="tl-text">The "Great Recession" that finally made the name stick. "Great Depression" was cited more in 2009 than during the actual Depression. Northern Rock bank run revives century-old panic contagion patterns.</div></div>
+    </div>
+
+    <div class="takeaways">
+      <div class="tk-title">✦ Key Takeaways from Chapter 9</div>
+      <ul>
+        <li>The nine perennial narratives are not historical curiosities — they are active today in mutated forms, and understanding their historical patterns enables recognition of their contemporary mutations.</li>
+        <li>Mutation is the mechanism of recurrence: old narratives persist by attaching to new celebrities, vocabulary, and cultural contexts that make the core structure feel fresh and relevant.</li>
+        <li>Major economic events result from <em>confluences</em> of multiple mutating epidemics — single narratives rarely cause recessions or depressions alone.</li>
+        <li>The Great Depression narrative has become the universal reference frame for all subsequent recessions — more powerful in retrospect than it was at the time.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch8')">← Ch 8: Seven Propositions</div><div class="ch-nav-btn" onclick="show('ch10')"><span>Next →</span> Ch 10: Panic vs. Confidence</div></div>
+</div>
+
+<!-- ══════════ CHAPTERS 10–18: COMPACT DETAIL VERSIONS ══════════ -->
+
+<div id="page-ch10" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 1</div><div class="hero-chnum">Chapter 10</div><div class="hero-title">Panic versus Confidence</div><div class="hero-essence">The most fundamental recurring narrative in economic history — stories about confidence in banks, in business, and in each other — has evolved across three generations while maintaining the same core structure: a contagious psychological state that can collapse or inflate aggregate economic activity.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">Three Generations of the Confidence Narrative</h2>
+    <p>Figure 10.1 traces three distinct but related narrative forms, each emerging as economic participation broadened. <strong>Financial panic narratives</strong> (pre-1914) were about wealthy bank depositors — the crisis was a crisis of the rich, and ordinary people had no savings to lose. The Panic of 1907 and J.P. Morgan's heroic personal bailout created an archetypal celebrity-hero narrative; every Federal Reserve Chair since is implicitly a "J.P. Morgan avatar" in the public narrative. <strong>Business confidence narratives</strong> (1920s–1960s) emerged as corporations became the dominant form of economic organisation, and the mood of corporate managers began to matter for the macroeconomy. <strong>Consumer confidence narratives</strong> (1952–present) emerged as mass consumption became the engine of growth — George Katona's Index of Consumer Sentiment (University of Michigan, 1952) institutionalised this by creating a regular repetition mechanism that itself sustains the narrative's epidemic potential.</p>
+
+    <div class="two-col">
+      <div class="col-box blue-top"><div class="col-box-title">The Panic of 1907 — A Narrative Anatomy</div><ul><li>J.P. Morgan as celebrity hero who "saved America"</li><li>First banking crisis with a sympathetic protagonist</li><li>Federal Reserve (1913) literally modelled on Morgan's consortium</li><li>Every Fed Chair since = J.P. Morgan narrative avatar</li><li>Building at 23 Wall St: modest size = public spirit narrative</li><li>"Financial panic" peaks in Google Ngrams ~1910</li></ul></div>
+      <div class="col-box red-top"><div class="col-box-title">Roosevelt's 1933 Fireside Chat — Narrative Intervention</div><ul><li>Bank run had closed all US banks — a national emergency</li><li>Roosevelt spoke as a military commander to his troops</li><li>"You people must have faith. You must not be stampeded by rumors."</li><li>After the chat, money flowed INTO banks when they reopened</li><li>A narrative — not monetary policy — ended the bank run</li><li>"The only thing we have to fear is fear itself" — borrowed from Mullen (1931)</li></ul></div>
+    </div>
+
+    <h2 class="sec">The Fear of Fear Paradox</h2>
+    <p>By the 1930s, a meta-narrative had emerged: economic crises are caused by contagious fear, and the solution is to stop being afraid. Irving Fisher (1930): "My only fear is the fear of fear itself." Thomas Mullen, assistant to Boston's Mayor (1931): "I believe the only thing we need to fear is fear itself." Roosevelt's inaugural (1933): the famous formulation. But Shiller notes a paradox: <em>telling everyone they need to be courageous confirms that fear is widespread and possibly rational</em>. If the President himself has to ask you not to panic, something must truly be terrifying. Narrative interventions aimed at reducing fear can paradoxically amplify the meta-narrative of widespread fear even while reducing the object-level fear they target.</p>
+
+    <h2 class="sec">Crowd Psychology Goes Viral</h2>
+    <p>Gustav Le Bon's <em>The Crowd</em> (1895) popularised the idea that in groups, individuals become subject to "suggestibility" — subconscious imitation that suspends individual rational calculation. Figure 10.3 shows "suggestibility" and "autosuggestion" following epidemic curves peaking around 1920–24, precisely as the 1920s boom began. Emile Coué's autosuggestion movement ("Every day in every way I get better and better") swept the US in 1922. Napoleon Hill's <em>Think and Grow Rich</em> (1937) was the climax of this movement. Shiller argues these ideas — that collective belief literally creates economic reality — primed the 1920s market for a boom/bust cycle of unusual severity, because people were simultaneously more susceptible to crowd psychology narratives and more confident that confidence could be self-generated.</p>
+
+    <h2 class="sec">The Great Depression Narrative — Then vs. Now</h2>
+    <p>Figure 10.4 is remarkable: "Great Depression" appears far more frequently in 2009 than it did during the actual Depression. People at the time called it "hard times." The term "Great Depression" was coined by economist Lionel Robbins in a 1934 book and only gradually attached to the event retrospectively. The retrospective narrative — built on photographs by Dorothea Lange, Steinbeck's <em>Grapes of Wrath</em>, Groucho Marx's autobiography, and FDR's fireside chats — became more powerful than the event itself. This illustrates a general principle: major economic trauma creates narrative infrastructure (images, phrases, archetypes) that outlasts the original event and shapes the response to all subsequent similar events.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 10</div><ul><li>Confidence narratives evolved through three generations (financial panic → business confidence → consumer confidence) as economic participation broadened.</li><li>J.P. Morgan became a narrative archetype institutionalised in the Federal Reserve's very structure — "central bank as trustworthy celebrity guardian."</li><li>The "fear of fear itself" meta-narrative can paradoxically amplify the anxiety it aims to address.</li><li>The Great Depression narrative is stronger today than it was during the Depression, because the retrospective cultural infrastructure (photographs, novels, FDR speeches) is richer than anything that existed in real time.</li><li>Confidence indexes (Michigan Consumer Sentiment, Conference Board) are themselves narrative tools — they create regular repetition opportunities that sustain the confidence narrative's epidemic potential.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch9')">← Ch 9: Recurrence</div><div class="ch-nav-btn" onclick="show('ch11')"><span>Next →</span> Ch 11: Frugality vs. Consumption</div></div>
+</div>
+
+<div id="page-ch11" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 2</div><div class="hero-chnum">Chapter 11</div><div class="hero-title">Frugality versus Conspicuous Consumption</div><div class="hero-essence">The ancient tension between modesty and display creates economic narratives with direct macroeconomic consequences — the Depression-era frugality epidemic deepened the downturn by making spending morally unacceptable, while the American Dream epidemic eventually enabled the 2008 housing bubble.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The 1930s: When Spending Became Morally Unacceptable</h2>
+    <p>During the Great Depression, frugality became not just economically necessary but morally obligatory. The phrase "keep up with the Joneses" (a satirical phrase for competitive consumption) grew most rapidly in the 1930s — used to condemn spending as callous disregard for suffering neighbours. A 1932 Wall Street Journal article documented that people with money and a genuine need for a new car were refusing to buy one out of "fear of neighborhood criticism" — a "new species of sales resistance" representing "fear of being considered ostentatiously extravagant." This is a narrative-driven suppression of demand that worsened and prolonged the Depression regardless of people's actual financial ability to spend.</p>
+
+    <div class="callout">
+      <div class="callout-label">Poverty Chic: Frugality as Status Signal</div>
+      <p>In a remarkable inversion, poverty actually became fashionable in the early 1930s. The Washington Post reported that "I cannot afford it" was "said brazenly, even boastingly — because didn't this imply that one had lost lots of money in stocks?" People competed to signal solidarity with suffering neighbours by conspicuously <em>not</em> consuming. Ford sales fell 86% from 1929 to 1932 — not purely from inability to pay but from social prohibition against the very <em>visibility</em> of wealth. Cars were the second most visible consumption item in Ori Heffetz's visibility index; not buying one was the most powerful signal of economic solidarity available.</p>
+    </div>
+
+    <h2 class="sec">The Feedback Loop That Deepened the Depression</h2>
+    <p>The frugality narrative created a self-reinforcing economic spiral. Consumer restraint → sales collapse → factory layoffs → more visible poverty → stronger frugality norm → deeper consumer restraint. New modesty crazes — bicycle commuting, cardboard jigsaw puzzles (replacing expensive wooden ones), blue denim fabric (formerly workwear) — provided positive social scripts for reduced consumption, making the restraint feel like participation in a virtuous social movement rather than deprivation. These scripts were economically devastating: they reduced aggregate demand in the very sectors where stimulus was most needed.</p>
+
+    <h2 class="sec">The American Dream: A 90-Year Epidemic</h2>
+    <p>James Truslow Adams coined "American Dream" in his 1931 New York Times bestseller. The phrase barely existed before; Figure 11.1 shows it becoming a slow but enormous epidemic still growing in 2019. Adams defined it as "a social order in which each man and each woman shall be able to attain to the fullest stature of which they are innately capable" — explicitly <em>not</em> "a dream of motor cars and high wages merely." Martin Luther King Jr.'s "I Have a Dream" speech (1963) gave the narrative a celebrity martyr and dramatically accelerated contagion. Today, MLK is mentioned in 3% of ProQuest "American Dream" hits; Adams is mentioned in less than 0.1%.</p>
+
+    <p>Over decades the narrative mutated from social opportunity to homeownership. Over two-thirds of all "American Dream" media references since 1931 also include "house" or "home." The 2003 American Dream Downpayment Assistance Act, Fannie Mae's slogan "As the American Dream Goes, So Do We," and Bush's "Ownership Society" campaign were all direct exploitation of this mutated narrative — providing moral legitimacy to mortgage practices that collapsed the global financial system in 2008.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 11</div><ul><li>The Depression-era frugality narrative made spending morally unacceptable — a direct causal mechanism for deepening and prolonging the downturn beyond what pure income effects would explain.</li><li>Modesty crazes (bicycles, jigsaw puzzles, blue jeans) provided social scripts that made reduced consumption into a virtuous identity statement, amplifying the macroeconomic contraction.</li><li>The American Dream is one of the slowest but largest narrative epidemics in US history — coined during the Depression, still growing 90 years later, having mutated from "social opportunity" to "homeownership entitlement."</li><li>The American Dream's mutation directly enabled the 2008 financial crisis by providing moral legitimacy for reckless mortgage expansion.</li><li>Piketty's documented rise in inequality since the 1980s correlates with the decline of the modesty/compassion narrative — frugality's retreat may have macroeconomic inequality implications beyond the individual level.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch10')">← Ch 10: Panic vs. Confidence</div><div class="ch-nav-btn" onclick="show('ch12')"><span>Next →</span> Ch 12: Gold Standard</div></div>
+</div>
+
+<div id="page-ch12" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 3</div><div class="hero-chnum">Chapter 12</div><div class="hero-title">The Gold Standard versus Bimetallism</div><div class="hero-essence">Monetary narratives carry quasi-religious emotional charge that mainstream economic analysis consistently underestimates. The 1890s bimetallism debate and the 2010s Bitcoin fever are structurally identical epidemics a century apart — both expressing the same deep anxieties about who controls money and who benefits.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The Crime of 1873 and Its Emotional Legacy</h2>
+    <p>The Coinage Act of 1873 put the US on the gold standard, ending bimetallism. The resulting deflation impoverished debtors — especially farmers who repaid mortgages with increasingly expensive dollars while their crop prices fell. The narrative labelled the act a "crime," framing gold-standard supporters as criminal conspirators against working people. This moral framing proved explosively contagious. By the 1890s, "bimetallism" appeared in nearly every conversation in affected communities — the Atlanta Constitution reported in 1895 that "everybody is crazy on the silver question. It is the only topic they will talk about. Whenever two men get together, whether it is at the postoffice or at the street corner, in the railway station, or the corner grocery, or while riding on the cars, they discuss nothing else."</p>
+
+    <h2 class="sec">Gold's Quasi-Religious Significance</h2>
+    <p>Gold appears 419 times in the King James Bible. Saints are depicted with gold nimbi. Walt Whitman wrote of gold-colored light radiating from every human. Senator John P. Jones (1874): "Gold is the articulation of commerce. It is the most potent agent of civilization." Wedding rings are gold. The emotional attachment to gold as representing permanent, divine, incorruptible value — versus paper money's human fallibility — gave the gold standard debate a moral intensity that no purely economic argument could match or rebut. Ben Bernanke, asked by Ron Paul why the Fed still holds gold rather than diamonds, gave the honest answer: "Well it's tradition — long-term tradition." Narratives persist in institutional form long after the intellectual justification has dissolved.</p>
+
+    <h2 class="sec">Bryan's "Cross of Gold" — Narrative Engineering at Its Finest</h2>
+    <p>William Jennings Bryan's July 1896 Democratic Convention speech concluded: "You shall not press down upon the brow of labor this crown of thorns. You shall not crucify mankind upon a cross of gold." The audience reaction was nearly hysterical — near-revolutionary ecstasy in the hall and nationwide. Bryan stretched his arms wide as if crucified as he spoke. Crucially, Bryan did <em>not</em> write those lines. He had attended a speech by Representative Samuel W. McCall in January 1896 that used almost identical words. Bryan had watched the audience reaction to McCall's lines carefully, and replicated them at the convention with a celebrity's platform. This is precisely how viral political narratives work: observers gauge audience reactions and replicate what works, gradually optimising for maximum contagion.</p>
+
+    <h2 class="sec">The Wizard of Oz — Monetary Allegory in Children's Fiction</h2>
+    <p>L. Frank Baum's <em>The Wonderful Wizard of Oz</em> (1900) is widely read as a bimetallism parable: the yellow brick road = gold standard, Dorothy's silver slippers (changed to ruby in the 1939 film for colour effect) = Free Silver movement, the Wizard = President McKinley (a weak phony), the Cowardly Lion = Bryan. "Oz" is the abbreviation for ounce, the standard unit for gold and silver. The narrative has mutated and recurred through the 1939 Judy Garland film, the 1995 novel <em>Wicked</em>, the Broadway musical (running continuously since 2003), and ongoing planned productions — a century-spanning echo of a monetary debate that most people have forgotten entirely.</p>
+
+    <table class="cmp-table">
+      <tr><th>Dimension</th><th>Bimetallism (1890s)</th><th>Bitcoin (2010s)</th></tr>
+      <tr><td>Core narrative</td><td>Establish silver as alternative to gold money</td><td>Establish cryptographic currency as alternative to fiat</td></tr>
+      <tr><td>Celebrity</td><td>William Jennings Bryan (named, known)</td><td>Satoshi Nakamoto (anonymous, mysterious)</td></tr>
+      <tr><td>Grievance</td><td>Farmers crushed by deflation from gold standard</td><td>Workers anxious about inequality and displacement</td></tr>
+      <tr><td>Mystery</td><td>How does the monetary system actually work?</td><td>What is a blockchain? Who is Satoshi?</td></tr>
+      <tr><td>Establishment response</td><td>Eastern intellectuals: "Western lunatics"</td><td>Finance establishment: "tulip mania"</td></tr>
+      <tr><td>Moral frame</td><td>Crown of thorns / Cross of gold — Christian suffering</td><td>Anarchist liberation / Anti-government sovereignty</td></tr>
+      <tr><td>Epidemic peak</td><td>~1896, secondary ~1933</td><td>2017–18, subsequent waves still occurring</td></tr>
+    </table>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 12</div><ul><li>Monetary narratives carry quasi-religious emotional intensity that purely rational economic analysis consistently fails to engage with or rebut.</li><li>Bimetallism and Bitcoin are structurally identical narrative epidemics a century apart — same grievances, same mystery element, same establishment contempt, same moral framing.</li><li>Bryan's "Cross of Gold" demonstrates that politicians do not invent viral narratives — they identify what is already circulating and amplify it with celebrity authority.</li><li>The Wizard of Oz is a century-spanning cultural artifact built on a monetary policy debate — demonstrating how narrative DNA can persist in popular culture long after its original political context has been forgotten.</li><li>Institutional gold holdings persist at central banks purely for narrative reasons (Bernanke: "long-term tradition") — demonstrating that narratives can maintain institutional inertia decades after their intellectual justification has been abandoned.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch11')">← Ch 11: Frugality</div><div class="ch-nav-btn" onclick="show('ch13')"><span>Next →</span> Ch 13: Labor-Saving Machines</div></div>
+</div>
+
+<div id="page-ch13" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 4</div><div class="hero-chnum">Chapter 13</div><div class="hero-title">Labor-Saving Machines Replace Many Jobs</div><div class="hero-essence">From Aristotle's automata through the Luddites to the Depression-era technocracy movement, the fear that machines permanently eliminate human work is one of history's most durable economic narratives — and has proven consistently wrong about permanent unemployment while remaining consistently powerful in shaping economic behavior.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">Two Thousand Years of Recurring Fear</h2>
+    <p>Aristotle (350 BCE) described the "tripods of Hephaestus" that moved automatically and raised the possibility of machines replacing slaves. Hero of Alexandria (1st century BCE) wrote a book called <em>Automata</em> and designed a coin-operated vending machine. Water-powered mills (1st century BCE) replaced human grain-grinding. The very first time someone built a labour-saving device, someone probably worried about what it would do to jobs. The key point is not that this fear is irrational — individual job losses from automation are real — but that the narrative of <em>permanent, catastrophic, total</em> unemployment has recurred in every major wave of mechanisation and has always been wrong at the aggregate level, yet always powerful enough to alter economic behavior in the short term.</p>
+
+    <h2 class="sec">The Luddites (1811) and the Swing Riots (1830)</h2>
+    <p>The 1811 UK Luddite protests against new power looms gave the narrative its most memorable modern name. The fictional "Ned Ludd" became the movement's symbolic leader — a celebrity who never existed, demonstrating that even imaginary celebrities can sustain narrative epidemics. The 1830 "Swing Riots" against mechanical threshers followed the same template with a different fictional leader ("Captain Swing"), different targeted machinery, but identical narrative structure: honest workers destroyed by machines serving the interests of capitalists against community welfare. Both "Luddite" and "Swing" persist in English as live vocabulary.</p>
+
+    <div class="example">
+      <div class="example-label">The Technocracy Movement — Narrative Extremism at the Depression's Bottom</div>
+      <div class="example-title">Howard Scott's Columbia University Group, 1932–33</div>
+      <p>At the stock market's lowest point (80% below 1929 peak), engineer Howard Scott led a Columbia University group called "Technocracy" that proposed replacing the economy with "electric dollars" (units of energy) managed by technicians. By 1933, Scott was as famous as movie stars. The New York Times reported "a mass movement that was almost hysterical... business contracts were even held up because of the fear engendered by technocracy." Scott's book was published under the pseudonym "Frank Arkright" — apparently evoking Richard Arkwright, the inventor whose spinning frame caused the antimachinery riots of 1779. The use of a pseudonym connects directly to Satoshi Nakamoto, demonstrating the same narrative template operating 80 years apart.</p>
+    </div>
+
+    <h2 class="sec">The 1928 Origin of "Technological Unemployment"</h2>
+    <p>The phrase "technological unemployment" was coined in 1917 but began its epidemic in 1928 — before the 1929 crash — when the first official US unemployment estimate (7.4% during apparent prosperity) baffled observers. Labor economist Sumner Slichter explained it as "we are eliminating jobs through labor-saving methods faster than we are creating them." The narrative went epidemic precisely because it explained the paradox of unemployment amidst abundance. The epidemic curve for "technological unemployment" (Figure 13.1) follows the same hump-shaped path as the Ebola curve in Figure 3.1, peaking in 1933 — the worst year of the Great Depression.</p>
+
+    <h2 class="sec">The Underconsumption Theory — Narrative Beats Analysis</h2>
+    <p>Connected to the machinery narrative was the popular (though academically dismissed) underconsumption theory: machines produce more than people can afford to buy, creating permanent surplus and unemployment. Gustav Cassel called it "charlatan teachings" in 1935. But the narrative was so emotionally compelling — machines are dehumanising us into an economy of permanent surplus that excludes ordinary people — that it shaped the New Deal's National Industrial Recovery Act (1933), which attempted to raise wages to restore purchasing power. Economists Harold Cole and Lee Ohanian (2004) argued the NIRA actually <em>prolonged</em> the Depression by enabling business cartels and rigidifying wages. A narratively driven policy, designed to cure a narrative-fuelled recession, may have made it worse.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 13</div><ul><li>Labor displacement fear recurs with every major wave of mechanisation — from Aristotle through the Luddites through the Depression's technocracy movement — always wrong about permanent total unemployment but always powerful enough to alter spending and hiring decisions in the short term.</li><li>The phrase "technological unemployment" began its epidemic in 1928 — before the crash — demonstrating that narratives can precede and possibly contribute to the economic events they describe.</li><li>The technocracy movement (1932–33) shows that extreme economic distress can make fringe narratives mainstream, using the same pseudonym/mystery structure as Bitcoin 80 years later.</li><li>Narrative-driven policies (the NIRA) can have unintended economic consequences when the narrative diagnoses the problem incorrectly.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch12')">← Ch 12: Gold Standard</div><div class="ch-nav-btn" onclick="show('ch14')"><span>Next →</span> Ch 14: AI Replaces All Jobs</div></div>
+</div>
+
+<div id="page-ch14" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 5</div><div class="hero-chnum">Chapter 14</div><div class="hero-title">Automation and Artificial Intelligence Replace Almost All Jobs</div><div class="hero-essence">The modern mutation of the labor-displacement narrative extends the threat from many jobs to nearly all jobs, including cognitive work. The same core anxiety recurs with dramatically upgraded technical grounding — but the narrative's economic effects depend critically on whether it mutates toward fear or toward opportunity.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">From "Many" to "Almost All" — The Mutation of Scale</h2>
+    <p>The crucial mutation distinguishing Chapter 14's narrative from Chapter 13's is the scale of the feared displacement. Where earlier narratives feared that machines would replace <em>many</em> jobs (in agriculture, in manufacturing), the 21st-century version imagines near-<em>total</em> automation including cognitive and creative work. This is not merely a quantitative change — it transforms the narrative from a story about specific workers in specific industries into an existential threat to human economic purpose itself. The phrase "Almost All Jobs" in the chapter title signals this qualitative shift.</p>
+
+    <h2 class="sec">Karel Čapek's R.U.R. — The Robot Epidemic Begins</h2>
+    <p>The Czech play <em>R.U.R.: Rossum's Universal Robots</em> (1921), which coined the word "robot" (from Czech for "worker"), first appeared in English in New York in 1922. The word "robot" entered virtually all of the world's languages within a decade — one of the fastest cross-linguistic word adoptions in modern history. The play's narrative template — artificial workers develop autonomous consciousness and revolt against their creators — has been the structural foundation of every AI fear narrative since: <em>Metropolis</em> (1927), <em>Terminator</em> (1984), <em>Ex Machina</em> (2014), and ongoing autonomous weapons debates. A 1921 Czech play remains the narrative DNA of 21st-century AI anxiety.</p>
+
+    <h2 class="sec">The 1990s Inversion: Same Story, Opposite Valence</h2>
+    <p>Shiller's most important analytical observation in Chapter 14: the same automation narrative that caused spending restraint and existential economic fear in the 1930s mutated during the 1990s dot-com boom into an opportunity narrative. Computers weren't eliminating your job — they were creating a new economy of unlimited wealth that you could participate in by investing in technology stocks. The underlying technology story (computers replacing human labour processes) was structurally identical in both periods. What changed was the surrounding constellation of narratives: in the 1930s, the context was depression and scarcity; in the 1990s, it was abundance and the "triumph of capitalism." This perfectly illustrates Proposition 4: the economic impact of a narrative changes through time based on what other narratives surround it.</p>
+
+    <h2 class="sec">The Bitcoin Connection Revisited</h2>
+    <p>Chapter 14 circles back to Chapter 1: the AI displacement narrative directly feeds Bitcoin's contagion. The fear that computers will replace your job creates a strong desire to be "on the finance side of tech" — to own and control digital assets rather than be displaced by them. Bitcoin allows even non-technical people to buy a position in the technology revolution. This is why Shiller argues that Bitcoin and AI fears are not separate narratives but connected parts of the same early 21st-century narrative constellation about technology, control, and economic security.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 14</div><ul><li>The AI narrative is the modern mutation of a technology-displacement fear going back to Aristotle — the mutation of scale (from many to almost all jobs, including cognitive work) is the defining change.</li><li>Karel Čapek's 1921 R.U.R. established the narrative DNA that still structures all AI fear narratives today: autonomous artificial intelligence that eventually surpasses and threatens human control.</li><li>The 1990s dot-com boom shows that the exact same underlying technology story can produce either fear (1930s) or opportunity (1990s) depending on the surrounding narrative context — demonstrating Proposition 4 at its clearest.</li><li>AI and Bitcoin narratives are connected parts of the same constellation: AI creates the fear, Bitcoin offers a narrative response to that fear (be on the control side of technology).</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch13')">← Ch 13: Labor Machines</div><div class="ch-nav-btn" onclick="show('ch15')"><span>Next →</span> Ch 15: Real Estate</div></div>
+</div>
+
+<div id="page-ch15" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 6</div><div class="hero-chnum">Chapter 15</div><div class="hero-title">Real Estate Booms and Busts</div><div class="hero-essence">Real estate booms are sustained by social comparison, identity narratives (homeownership as American Dream), and political legitimation — and real estate busts are amplified when the narrative of inevitable appreciation collapses. The "housing bubble" narrative itself tracked and amplified the 2008 crisis.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The Housing Bubble Narrative</h2>
+    <p>Figure 15.1 plots Google search queries for "housing bubble" from 2004 to 2019. The phrase barely existed as a popular concept before 2004. Its use exploded precisely as the housing market peaked and began to decline, reaching a maximum around 2008. This is not coincidental — the narrative <em>tracked the event</em> and almost certainly amplified it: as more people searched for "housing bubble," more people became aware that they might be overpaying, changing their behavior in ways that contributed to the very deflation the phrase described. The narrative was simultaneously a symptom and a cause of the economic event it labelled.</p>
+
+    <h2 class="sec">Robert Shiller's Own Failed Intervention</h2>
+    <p>Shiller's S&P/Case-Shiller Home Price Index, published in multiple academic papers and in his 2005 book <em>Irrational Exuberance</em> (second edition), showed clearly that US home prices had barely risen in real (inflation-adjusted) terms between 1890 and 2000 — directly contradicting the widespread narrative that real estate was always a safe, inflation-beating investment. The data was available, peer-reviewed, and publicly disseminated. It had essentially no effect on the housing bubble. This is Proposition 5 in action at maximum scale: truth is not enough to stop false narratives, especially when the false narrative is embedded in institutional structures, personal identity, and government policy that all amplify its contagion.</p>
+
+    <h2 class="sec">The American Dream as Housing Bubble Fuel</h2>
+    <p>As documented in Chapter 11, the American Dream narrative had mutated by the early 2000s into a narrative specifically about homeownership. Over two-thirds of all "American Dream" media references since 1931 also include "house" or "home." Fannie Mae's 2003 slogan "As the American Dream Goes, So Do We" represents the corporate capture of this narrative — the largest government-sponsored mortgage company explicitly branded itself as the vehicle for realising the American Dream. The 2003 American Dream Downpayment Assistance Act and President Bush's "Ownership Society" campaign framework provided political legitimation. The convergence of moral narrative (homeownership = virtue), political narrative (government supports your dream), and financial narrative (real estate always appreciates) created the conditions for a historic bubble — and a historic bust.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 15</div><ul><li>The "housing bubble" narrative tracked the actual bubble almost in real time through Google Trends — both symptom and cause of the deflation it described.</li><li>Shiller's own carefully documented evidence that real estate barely appreciates in real terms over a century failed to dent the appreciation narrative — a demonstration of Proposition 5 at maximum scale.</li><li>Real estate bubbles are sustained by a convergence of three narrative streams: moral (homeownership = virtue), political (government endorses your dream), and financial (prices only go up). All three had to be simultaneously active to produce the 2008 crisis.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch14')">← Ch 14: AI</div><div class="ch-nav-btn" onclick="show('ch16')"><span>Next →</span> Ch 16: Stock Market Bubbles</div></div>
+</div>
+
+<div id="page-ch16" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 7</div><div class="hero-chnum">Chapter 16</div><div class="hero-title">Stock Market Bubbles</div><div class="hero-essence">The 1929 crash and its constellation of stories remain the dominant reference frame for every subsequent market event. A persistent "crash anxiety" narrative, made possible by the 1929 flashbulb memory, functions as an independent economic force — suppressing risk-taking in some periods and amplifying it in others.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The 1929 Crash's Extraordinary Narrative Legacy</h2>
+    <p>Figure 16.1 plots "stock market crash" in books and news from 1900 to 2019. The 1929 crash shows as a sharp spike in news coverage — a fast epidemic — but produces a long, decades-long epidemic in books that was still growing at the time of writing. In 2009, "Great Depression" comparisons in news media dramatically exceeded anything published during the actual Depression in the 1930s. The narrative infrastructure of the 1929 crash — Dorothea Lange's photographs, Steinbeck's <em>Grapes of Wrath</em>, FDR's fireside chats, Groucho Marx's autobiography, the specific phrase "Roaring Twenties" — is richer today than it was in real time and continues to amplify with each subsequent recession.</p>
+
+    <h2 class="sec">Social Comparison and the Contagion of Speculation</h2>
+    <p>Stock market booms are driven primarily by social comparison narratives — stories about ordinary people becoming wealthy through stocks. The 1920s had these in maximum density: Groucho Marx received tips from an elevator man, a Wall Street banker, his theatrical producer, and a chance golf acquaintance — and he followed all of them without understanding what any of the companies did. "Thousands speculated — and won too — without the slightest knowledge of the nature of the company upon whose fortunes they were relying, like the people who bought Seaboard Air Line under the impression that it was an aviation stock." (Seaboard Air Line was a railroad.) The same social comparison mechanism recurred in the dot-com bubble and the cryptocurrency boom.</p>
+
+    <blockquote>
+      "The chief danger, therefore, did not inhere in conditions at all. It was the danger of fear, panicky fear, which might be communicated from the stock market to business. 'My only fear is the fear of fear.'"
+      <footer>— Irving Fisher, Yale economist, 1930 (speaking after the crash he failed to predict)</footer>
+    </blockquote>
+
+    <h2 class="sec">Portfolio Insurance and the 1987 Crash — Proposition 4 Applied</h2>
+    <p>The 1987 crash — the largest single-day percentage decline in US stock market history — was surrounded by a specific narrative about "portfolio insurance," a computerised trading strategy that perversely amplified the crash it was designed to prevent. This narrative was specific to 1987 and does not map onto 1929. When applying the Great Depression narrative template to the 1987 crash, analysts missed the specific mechanistic story that was actually driving behavior in 1987. This illustrates Proposition 4 perfectly: the same type of event (a large market decline) carries fundamentally different narratives in different eras, with different mechanisms and different economic implications.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 16</div><ul><li>The 1929 crash is the narrative anchor for all subsequent stock market events — more discussed in 2009 than during the actual Depression, and growing in cultural prominence.</li><li>Stock market booms spread through social comparison narratives — stories of neighbours and acquaintances making easy fortunes are more powerful than any analysis of fundamentals.</li><li>Keynes's beauty contest metaphor shows that speculation is structurally narrative: investors are modeling what others think others will pay, not what a firm is intrinsically worth.</li><li>Irving Fisher's "permanently high plateau" (1929) demonstrates how a single celebrity statement at a historically catastrophic moment can create a lasting cultural archetype for overconfidence.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch15')">← Ch 15: Real Estate</div><div class="ch-nav-btn" onclick="show('ch17')"><span>Next →</span> Ch 17: Boycotts & Evil Business</div></div>
+</div>
+
+<div id="page-ch17" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 8</div><div class="hero-chnum">Chapter 17</div><div class="hero-title">Boycotts, Profiteers, and Evil Business</div><div class="hero-essence">Cyclical anger at business as an institution peaks during inflation and depression, fuelled by narratives that frame ordinary profit-seeking as exploitation or piracy. The narrative evolution from "boycott" through "profiteer" to "maximize shareholder value" shows how identical economic behavior can be framed alternately as theft or as scientific optimization.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The Boycott Narrative — Built-In Contagion</h2>
+    <p>The word "boycott" has an unusual narrative origin: it derives from Captain Charles Boycott, an English land agent in County Mayo, Ireland, who in 1880 became the target of coordinated social and economic ostracism after attempting to evict tenants during a land dispute. The story of a community refusing to deal with an exploitative figure — refusing to harvest his crops, deliver his mail, or serve him in shops — went viral internationally within months of the original events. The word that was coined spread because it came pre-loaded with a complete human-interest story: a named villain, a wronged community, and a satisfying moral script for collective action. Boycotts have been a recurring narrative tool in every period of perceived price exploitation since.</p>
+
+    <h2 class="sec">The "Profiteer" Epidemic — World War I and After</h2>
+    <p>"Profiteer" was coined in 1912 and went epidemic during and after World War I, peaking in the 1920–21 depression (Figure 17.1). The word cleverly evoked "privateer" — a government-licensed pirate ship — suggesting that wartime businesspeople were pirates with legal cover rather than legitimate entrepreneurs. Congressman Arthur Capper: "Profiteers are more dangerous than Reds." The 1920–21 depression has been called "the 1920–21 buyers' strike" — consumers collectively refusing to buy at inflated prices, driving a sharp economic contraction. This was explicitly narrative-driven: people discussed boycotts publicly, and the sense that everyone else was also refusing to buy made individual restraint feel patriotic and socially validated.</p>
+
+    <h2 class="sec">The 1930s: Evil Business in the Great Depression</h2>
+    <p>The 1930s saw an explosion of anti-business sentiment that directly shaped New Deal policy. The National Industrial Recovery Act of 1933 — creating mandatory "codes of fair competition" — was partly a legislative response to public rage at corporate price-gouging and wage-cutting. Economists Harold Cole and Lee Ohanian argued in 2004 that the NIRA actually prolonged the Depression by enabling business cartels and making wage cuts impossible even when deflation required them. A morally motivated, narratively driven policy designed to punish evil business may have extended the suffering it aimed to alleviate — a recurring pattern in the intersection of narrative and policy.</p>
+
+    <h2 class="sec">"Maximize Shareholder Value" — The 1980s Counter-Narrative</h2>
+    <p>The phrase "maximize shareholder value" does not appear in corporate discourse before the 1970s. It grew steadily through the 1980s and 1990s, providing scientific-sounding moral justification for corporate raiders and leveraged buyouts. Shiller unpacks the engineering of this three-word phrase: "maximize" connotes intelligence and mathematics; "shareholder" reminds listeners that people's actual savings funded the enterprise; "value" sounds more idealistic than "profit" or "wealth." The three words together reframe aggressive corporate behavior that a previous era would have called profiteering as the application of scientific principle to the legitimate interests of capital owners. This is word engineering in the service of narrative reversal — making the same behavior morally acceptable that had previously been narratively condemned.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 17</div><ul><li>Anti-business narratives peak during inflation and depression, when price increases or wage cuts can be framed as exploitation by named, visible antagonists.</li><li>"Profiteer" was a brilliantly engineered word — its evocation of "privateer" framed normal profit-seeking as government-sanctioned piracy, giving the narrative immediate moral charge.</li><li>The 1920–21 buyers' strike demonstrates that narrative-driven collective consumer restraint can cause or deepen recessions independent of any change in prices or incomes.</li><li>Narrative-driven policy (the NIRA) can have unintended consequences when the narrative misidentifies the cause of the problem — punishing "evil business" when the real cause was deflation and insufficient demand.</li><li>"Maximize shareholder value" is the 1980s counter-narrative to "profiteering" — identical behavior, opposite moral framing, achieved purely through engineered word choice.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch16')">← Ch 16: Stock Bubbles</div><div class="ch-nav-btn" onclick="show('ch18')"><span>Next →</span> Ch 18: Wage-Price Spiral</div></div>
+</div>
+
+<div id="page-ch18" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part III · Perennial Narrative 9</div><div class="hero-chnum">Chapter 18</div><div class="hero-title">The Wage-Price Spiral and Evil Labor Unions</div><div class="hero-essence">The wage-price spiral narrative was a post-WWII innovation tied to specific historical conditions of peak union power. It provided moral legitimacy for the Volcker disinflation — framing workers as inflation villains — and has shown signs of revival whenever inflation re-emerges, most recently in 2021–22.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The Narrative's Historical Origins</h2>
+    <p>The phrases "wage-price spiral" and "cost-push inflation" barely existed before World War II. Figure 18.1 shows both were virtually absent from books before 1945, then rose dramatically through the 1960s and 1970s. This timing is not coincidental: the narrative arose precisely when labour union power was at its peak (US union membership ~35% of workers in 1954), when unions were visibly and publicly extracting large wage increases in high-profile industries, and when inflation was attributable in public perception to those wage demands. The narrative frame — unions demanding wages → companies raising prices to cover costs → unions demanding higher wages → repeat — put organised labour at the centre of the inflation story.</p>
+
+    <h2 class="sec">The Competing Narrative (Evil Business vs. Evil Unions)</h2>
+    <p>Chapter 17's boycott/profiteer narrative and Chapter 18's wage-price spiral narrative are directly opposed: they describe the same distributional conflict but assign villainy to opposite parties. The evil-business narrative says workers are victims of corporate exploitation; the wage-price spiral narrative says workers (through unions) are causing inflation that victimises everyone. Which narrative dominated in any given period determined the political direction of economic policy — whether the regulatory impulse would be directed at controlling prices or controlling wages. In the 1930s, evil-business narratives dominated and produced the NIRA. In the 1970s–80s, wage-price spiral narratives dominated and produced anti-union policy.</p>
+
+    <h2 class="sec">The Volcker Shock — Narrative Legitimation of Painful Policy</h2>
+    <p>Paul Volcker's aggressive interest rate increases of 1979–81 — raising the federal funds rate to 20%, triggering a severe recession, and unemployment rising above 10% — required extraordinary political legitimacy to sustain. The wage-price spiral narrative provided it: by framing inflation as caused by worker/union greed, the narrative made the recession's suffering seem like a necessary disciplinary response to misbehaviour rather than a political choice about distribution. Whether or not this framing was accurate — most academic economists argue the Federal Reserve's monetary policy decisions were more significant than wage dynamics — it was sufficiently contagious to provide the political space needed for the policy to proceed.</p>
+
+    <h2 class="sec">The 2021–22 Revival</h2>
+    <p>The wage-price spiral narrative had virtually disappeared from public discourse after the Volcker disinflation — Figure 18.1 shows it declining sharply after the early 1980s. But its reappearance in 2021–22, as post-pandemic supply chain disruptions and fiscal stimulus combined to produce the highest US inflation since the 1970s, demonstrates once again Proposition 1 in action: narratives do not die, they sleep. The dormant narrative was reawakened by conditions that matched its template, bringing with it all of its structural implications about whose fault inflation is and what should be done about it.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 18</div><ul><li>The wage-price spiral narrative is a post-WWII innovation tied to specific historical conditions of peak union power — it does not have the multi-century history of the other perennial narratives.</li><li>Evil-business narratives (Ch 17) and evil-union narratives (Ch 18) are competing descriptions of the same distributional conflict — which dominates at any moment determines the political direction of economic policy.</li><li>The Volcker shock's political sustainability was partly provided by the wage-price spiral narrative, which framed workers as inflation villains and recession as necessary discipline.</li><li>The 2021–22 re-emergence demonstrates that even temporarily dormant narratives remain in cultural memory and can be reactivated by conditions that match their pattern — confirming Proposition 1's warning against assuming fast-fading = permanently dead.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch17')">← Ch 17: Boycotts</div><div class="ch-nav-btn" onclick="show('ch19')"><span>Next →</span> Ch 19: Future Narratives</div></div>
+</div>
+
+<!-- ══════════ CHAPTER 19 ══════════ -->
+<div id="page-ch19" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Part IV · Advancing Narrative Economics</div><div class="hero-chnum">Chapter 19</div><div class="hero-title">Future Narratives, Future Research</div><div class="hero-essence">The book's forward-looking conclusion identifies narrative clusters most likely to shape future economic events, outlines the research program needed to mature narrative economics into a rigorous discipline, and acknowledges with intellectual honesty the limits of what the approach can currently claim to predict.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">Which Narratives Might Shape Future Economic Events?</h2>
+    <p>Shiller is appropriately humble about specific predictions — Proposition 1 establishes that narrative virality has a substantial random component. But he identifies several narrative clusters that are in active epidemic status and likely to have major economic effects in coming decades.</p>
+
+    <div class="card-grid">
+      <div class="card"><div class="card-icon">🤖</div><div class="card-name">AI and Total Automation</div><div class="card-def">In active epidemic as of the book's writing (2019). The narrative that AI will replace most cognitive work — lawyers, doctors, writers, analysts — is uniquely broad in scope compared to all previous technology displacement narratives. Its economic effects depend critically on whether it continues to mutate toward fear (1930s pattern) or toward opportunity (1990s pattern), or whether it fragments into fear for some occupational groups and opportunity for others simultaneously.</div></div>
+      <div class="card"><div class="card-icon">💸</div><div class="card-name">Inequality Narratives</div><div class="card-def">Growing wealth concentration creates narrative conditions similar to the 1890s bimetallism and 1930s profiteering epidemics. New narratives assigning blame and proposing radical remedies (Universal Basic Income, wealth taxes, Modern Monetary Theory) are in early epidemic stages. The "We Are the 99%" narrative of 2011 may have been the first wave of what becomes a large multi-decade epidemic.</div></div>
+      <div class="card"><div class="card-icon">🌍</div><div class="card-name">Climate and Existential Risk</div><div class="card-def">Climate change narratives were in early epidemic stages in 2019 — Shiller notes that whether they spread as immediate crisis stories or distant abstractions will determine their economic impact. A crisis narrative motivates immediate behavioral change; a distant abstraction produces only weak effects regardless of its objective urgency.</div></div>
+      <div class="card"><div class="card-icon">💰</div><div class="card-name">Future Monetary Innovations</div><div class="card-def">The Bitcoin/bimetallism template will recur with new celebrities, new technologies, new moral frameworks. Central Bank Digital Currencies, new cryptocurrency forms, and as-yet-uninvented monetary innovations will generate narrative epidemics following the same structural patterns documented in Chapter 12. The specific form cannot be predicted; the structural template almost certainly can.</div></div>
+      <div class="card"><div class="card-icon">🏥</div><div class="card-name">Health, Pandemic, and Security Fears</div><div class="card-def">Shiller notes (and subsequent events spectacularly confirmed) that disease epidemic narratives and economic narratives co-evolve. The 2018 Congo Ebola outbreak showed false narratives ("Ebola doesn't exist," "Ebola is fabricated for financial gain") actively amplifying the biological epidemic. Economic narratives about health insecurity, pharmaceutical pricing, and healthcare access are in continuous epidemic status.</div></div>
+    </div>
+
+    <h2 class="sec">The Research Programme Needed</h2>
+    <p>Shiller outlines what a mature narrative economics research programme would require. The most fundamental need is systematic collection and analysis of narrative data at scale — going beyond simple word frequency counts to semantic content analysis, sentiment scoring, and network diffusion mapping. This requires interdisciplinary collaboration between economists, computational linguists, neuroscientists, and historians. It also requires developing richer epidemic models that incorporate narrative mutation (the story changes as it spreads), re-infection (people can re-engage with narratives they'd forgotten), and heterogeneous contagion rates across individuals and social networks.</p>
+
+    <h2 class="sec">The Big Data Opportunity</h2>
+    <p>The massive digitisation of historical and current text — Google Books, ProQuest, Twitter/X, Reddit, Facebook, news archives — provides an unprecedented opportunity for systematic narrative monitoring. At the time of writing (2019), the tools for semantic analysis (what a story means, not just which words it uses), sentiment tracking (the emotional tone of narratives), and network diffusion mapping (which social networks carry which stories) were rapidly improving. Future researchers could, in principle, build real-time narrative monitoring systems analogous to the epidemiological surveillance systems that track influenza strains globally.</p>
+
+    <div class="callout blue">
+      <div class="callout-label">Policy Implications — What Should Change</div>
+      <p>If narratives drive economic events, then economic policy must explicitly engage with the narrative environment — not just interest rate setting or fiscal stimulus. Shiller doesn't advocate propaganda, but he argues that policymakers who design interventions without understanding the narrative landscape are operating with a crucial blind spot. Roosevelt's fireside chats and Bush's "get on board" speech after 9/11 were as much economic policies as any interest rate decision — and arguably more immediately effective. Future economic policymaking may need dedicated narrative economists alongside traditional analysts.</p>
+    </div>
+
+    <h2 class="sec">Intellectual Humility About the Approach's Limits</h2>
+    <p>Shiller closes with characteristic intellectual honesty. Narrative economics is at best probabilistic, not deterministic. The approach is more like epidemiological surveillance — which can identify conditions favourable for disease outbreaks without predicting exactly when or where — than like engineering, which can specify outcomes precisely. Big economic events usually have complex, multi-narrative causes that "cannot be described as a simple story or a contagious narrative" — meaning that the very attempt to create a simple causal narrative for an economic event may itself be epistemically dangerous. The framework demands that researchers remain alert to this paradox: in seeking to identify contagious economic narratives, they must be careful not to become contagious themselves.</p>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Chapter 19</div><ul><li>AI/automation, inequality, climate, and monetary innovation are the most economically pregnant narrative clusters for the coming decades — each in active epidemic status as of 2019.</li><li>The research programme requires scale, interdisciplinarity, and richer models — particularly incorporating mutation, re-infection, and network heterogeneity that the basic SIR model misses.</li><li>Big data tools (digitised archives, social media, computational linguistics) offer unprecedented opportunities for real-time narrative monitoring analogous to epidemiological disease surveillance.</li><li>Policymakers who ignore narrative dynamics are missing one of the most powerful levers of economic management — but narrative intervention carries its own risks of paradoxical amplification.</li><li>The approach is inherently probabilistic, not deterministic — appropriate intellectual humility is built into the methodology, not an apology for it.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch18')">← Ch 18: Wage-Price Spiral</div><div class="ch-nav-btn" onclick="show('appendix')"><span>Next →</span> Appendix: SIR Models</div></div>
+</div>
+
+<!-- ══════════ APPENDIX ══════════ -->
+<div id="page-appendix" class="page">
+  <div class="ch-hero"><div class="hero-stripe"></div><div class="hero-part-tag">Technical Appendix</div><div class="hero-chnum">Appendix</div><div class="hero-title">Applying Epidemic Models to Economic Narratives</div><div class="hero-essence">The mathematical backbone of narrative economics: how the Kermack–McKendrick SIR model and its extensions are adapted to describe the spread and decline of economic narrative epidemics, measure their parameters, and generate testable predictions about future behaviour.</div></div>
+  <div class="ch-body">
+    <h2 class="sec">The Kermack–McKendrick Model (1927)</h2>
+    <p>William Kermack and Anderson McKendrick published the foundational epidemic model in 1927. Their paper divided a fixed population into three compartments — Susceptible (S), Infected (I), Recovered/Removed (R) — and described the flow between compartments using differential equations. The fundamental insight: an epidemic only grows when the contagion rate per susceptible-infected contact (β) exceeds the recovery rate (γ). The ratio R₀ = β/γ is the Basic Reproduction Number: above 1, epidemics grow; below 1, they fade. This single number determines the entire qualitative behaviour of the epidemic.</p>
+
+    <div class="sir-diagram">
+      <div style="font-size:11px;color:var(--white-faint);margin-bottom:22px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;">SIR Differential Equations — The Mathematical Core</div>
+      <div class="sir-row">
+        <div class="sir-box S"><div class="sir-letter">S</div><div class="sir-word">Susceptible</div></div>
+        <div class="sir-arrow"><div class="sir-arrow-sym">→</div><div class="sir-arrow-rate">dS/dt = −β·S·I/N</div></div>
+        <div class="sir-box I"><div class="sir-letter">I</div><div class="sir-word">Active / Infected</div></div>
+        <div class="sir-arrow"><div class="sir-arrow-sym">→</div><div class="sir-arrow-rate">dI/dt = β·S·I/N − γ·I</div></div>
+        <div class="sir-box R"><div class="sir-letter">R</div><div class="sir-word">Recovered / Forgot</div></div>
+      </div>
+      <div style="margin-top:22px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto;">
+        <p style="font-size:13px;color:var(--white-dim);line-height:1.7;">Where <strong>N = S + I + R</strong> (total population, constant). The epidemic grows when <strong>dI/dt &gt; 0</strong>, which requires <strong>βS/N &gt; γ</strong> — i.e., when the "effective reproduction number" Rₑ = βS/(Nγ) exceeds 1. As S declines (more people have been infected), Rₑ falls below 1 and the epidemic begins to decline even without any intervention.</p>
+        <p style="font-size:13px;color:var(--white-dim);margin-top:8px;line-height:1.7;"><strong>For narratives:</strong> β measures how quickly an encounter between an active spreader and a susceptible person results in the narrative being transmitted. γ measures how quickly active spreaders lose interest, forget, or move on to other topics.</p>
+      </div>
+    </div>
+
+    <h2 class="sec">The Four Epidemic Types and Their Economic Signatures</h2>
+    <div class="two-col">
+      <div class="col-box yellow-top"><div class="col-box-title">Fast Large Epidemic (High β, High γ)</div><ul><li>Sharp spike in narrative prevalence over days or weeks</li><li>Reaches large fraction of population quickly</li><li>Burns out quickly as susceptibles depleted</li><li>Example: 1987 crash news (97% heard within hours)</li><li>Example: 9/11 national emergency narrative</li><li>Economic impact: Sharp but brief behavioral change</li></ul></div>
+      <div class="col-box blue-top"><div class="col-box-title">Fast Small Epidemic (Moderate β, High γ)</div><ul><li>Brief spike, never reaches large fraction</li><li>Recovers almost as fast as it spreads</li><li>Often fails to become culturally significant</li><li>Example: Most social media "trending topics"</li><li>Example: Most business cycle theories</li><li>Economic impact: Usually negligible</li></ul></div>
+    </div>
+    <div class="two-col">
+      <div class="col-box red-top"><div class="col-box-title">Slow Large Epidemic (Low β, Very Low γ)</div><ul><li>Decades-long buildup to near-total penetration</li><li>Never appears on best-seller lists or trending topics</li><li>Shapes worldview and ambient cultural assumptions</li><li>Example: The American Dream (90 years, still growing)</li><li>Example: HIV/AIDS (30+ year epidemic)</li><li>Economic impact: Deep structural effects on behavior</li></ul></div>
+      <div class="col-box yellow-top"><div class="col-box-title">Slow Small Epidemic (Low β, Moderate γ)</div><ul><li>Circulates indefinitely in small populations</li><li>Never achieves mass penetration</li><li>May be waiting for the right trigger to mutate into larger epidemic</li><li>Example: Gold standard advocacy between depression decades</li><li>Example: Dormant frugality narrative between recessions</li><li>Economic impact: Minimal until conditions change</li></ul></div>
+    </div>
+
+    <h2 class="sec">Measuring Narrative Prevalence — The Data Sources</h2>
+    <p>The appendix formalises Shiller's use of digitised text databases as proxies for I(t) — the number of people actively spreading a narrative at time t. This is an approximation (text production lags word-of-mouth spread; databases have coverage biases) but provides a measurable and cross-temporally comparable indicator unavailable through any other method.</p>
+
+    <div class="card-grid">
+      <div class="card"><div class="card-name">Google Ngrams (books, 1800–2019)</div><div class="card-def">Frequency of n-grams in millions of digitised books. Excellent for slow, multi-decade epidemic trends. Book production smooths short-term spikes. Best for identifying structural, long-run narrative patterns.</div></div>
+      <div class="card"><div class="card-name">ProQuest News & Newspapers</div><div class="card-def">Comprehensive digitised newspaper archive from roughly 1800 onward. Better than Ngrams for faster, news-driven epidemics. Shiller uses percentage of total articles containing a term to normalise for archive size.</div></div>
+      <div class="card"><div class="card-name">Google Trends (2004–present)</div><div class="card-def">Real-time search query frequency. Excellent for monitoring live epidemics in progress. "Housing bubble" search queries tracked the 2004–2008 bubble and collapse almost in real time. Limited to post-2004 data.</div></div>
+      <div class="card"><div class="card-name">JSTOR Academic Journals</div><div class="card-def">Used specifically to measure relative academic attention across disciplines. Confirms Figure 2.1's finding that economics lags all other social sciences in narrative attention. Useful for tracking how ideas spread within professional communities.</div></div>
+    </div>
+
+    <h2 class="sec">Extensions Beyond the Basic SIR</h2>
+    <p>The appendix surveys several model extensions that address known limitations of the basic SIR framework as applied to narratives. The <strong>SEIR model</strong> adds an Exposed (E) compartment between S and I — people who have heard the narrative but are still deciding whether to spread it — useful for modelling the lag between exposure and active spreading. The <strong>SIS model</strong> (Susceptible-Infected-Susceptible) removes the permanent immunity assumption, so recovered individuals return to the susceptible pool — appropriate for narratives where forgetting genuinely restores susceptibility, allowing re-infection. <strong>Super-spreader extensions</strong> model the fact that some individuals have much higher β than average, which can dramatically change epidemic dynamics: a small number of super-spreaders (major media outlets, celebrities, viral content creators) can sustain a narrative epidemic that would die without them. <strong>Mutation models</strong> allow β and γ to change over time as the narrative evolves, capturing the way successful narratives adapt to maintain contagion.</p>
+
+    <h2 class="sec">The HIV Analogy — Why Low-Contagion Epidemics Still Matter</h2>
+    <p>HIV/AIDS has a biologically low contagion rate (transmitted only through specific bodily fluids in specific circumstances) but has produced a global epidemic of tens of millions of cases because its <em>recovery rate is also very low</em> — an untreated HIV-positive individual remains infectious for years or decades. This is the key insight for slow narrative epidemics: the American Dream narrative doesn't need to be mentioned in every conversation to reach virtually everyone eventually. It needs only to be mentioned occasionally (at real estate signings, in campaign speeches, in advertising) while being almost never forgotten once heard. The balance of β and γ, not their absolute values, determines the epidemic's ultimate reach.</p>
+
+    <div class="callout">
+      <div class="callout-label">Theoretical Figure A.1 — Epidemic Paths Under Different Parameters</div>
+      <p>The appendix's Figure A.1 shows several theoretical epidemic trajectories under different combinations of β and γ. The key visual insight is that epidemics with very different peak heights and timing can all eventually infect the same large fraction of the population — they simply reach that point at different speeds. This means researchers should not equate "peaked early" with "low long-term importance," a warning that applies directly to how news media and financial analysts typically interpret economic narrative data.</p>
+    </div>
+
+    <div class="takeaways"><div class="tk-title">✦ Key Takeaways — Appendix</div><ul><li>The SIR model provides a quantitative, falsifiable framework that transforms narrative economics from observation to measurable science — R₀ = β/γ determines epidemic fate.</li><li>The four epidemic types (fast large, fast small, slow large, slow small) have very different economic signatures — the most economically important narratives are often the slow large ones that are hardest to observe in real time.</li><li>Digitised text databases (Ngrams, ProQuest, Google Trends) provide measurable proxies for epidemic prevalence I(t), enabling cross-century comparison of narrative trajectories.</li><li>Extensions (SEIR, SIS, super-spreader models, mutation models) address the most important deviations of real narrative dynamics from the basic SIR framework.</li><li>The HIV analogy demonstrates that low-contagion narratives with low recovery rates can produce massive long-run penetration — refuting the assumption that visibly viral narratives are the most economically important ones.</li></ul></div>
+  </div>
+  <div class="ch-nav"><div class="ch-nav-btn" onclick="show('ch19')">← Ch 19: Future Research</div><div class="ch-nav-btn" onclick="show('home')"><span>←</span> Back to Overview</div></div>
+</div>
+
+</main>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const page = document.getElementById('page-' + id);
+    if (page) {
+      page.classList.add('active');
+      document.getElementById('main').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      const oc = item.getAttribute('onclick') || '';
+      if (oc.includes("'" + id + "'")) item.classList.add('active');
+    });
+  }
+
+  show('home');
+</script>
+</body>
+</html>
